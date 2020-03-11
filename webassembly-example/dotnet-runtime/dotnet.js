@@ -92,6 +92,10 @@ var Module = {
         for (const key in PointBlip) {
           pointBlipWrapper[key] = PointBlip[key];
         }
+        // wrapping onServer Delegates to allow ellipsis transfer to dotnet
+        altWrapper["onServer"] = function (eventName, handlerDelegate) {
+             alt.onServer(eventName, (...args) => { handlerDelegate(args); });
+        };
         var webViewWrapper = {};
         for (const key in WebView) {
           webViewWrapper[key] = WebView[key];
