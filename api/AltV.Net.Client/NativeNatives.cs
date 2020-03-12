@@ -6180,7 +6180,7 @@ namespace AltV.Net.Client
 
 		private static Vector3 JSObjectToVector3(object obj) {
 			var jsObject = (JSObject) obj;
-			return new Vector3((float) jsObject.GetObjectProperty("x"), (float) jsObject.GetObjectProperty("y"),(float) jsObject.GetObjectProperty("z"));
+			return new Vector3(System.Convert.ToSingle(jsObject.GetObjectProperty("x")), System.Convert.ToSingle(jsObject.GetObjectProperty("y")), System.Convert.ToSingle(jsObject.GetObjectProperty("z")));
 		}
 
 		/// <summary>
@@ -42210,7 +42210,17 @@ namespace AltV.Net.Client
 		public (int, bool, Vector3, Vector3, int) GetShapeTestResult(int rayHandle, bool hit, Vector3 endCoords, Vector3 surfaceNormal, int entityHit)
 		{
 			if (getShapeTestResult == null) getShapeTestResult = (Function) native.GetObjectProperty("getShapeTestResult");
-			var results = (Array) getShapeTestResult.Call(native, rayHandle, hit, endCoords, surfaceNormal, entityHit);
+			var endCoords1 = Runtime.NewJSObject();
+			endCoords1.SetObjectProperty("x", endCoords.X);
+			endCoords1.SetObjectProperty("y", endCoords.Y);
+			endCoords1.SetObjectProperty("z", endCoords.Z);
+			var surfaceNormal1 = Runtime.NewJSObject();
+			surfaceNormal1.SetObjectProperty("x", surfaceNormal.X);
+			surfaceNormal1.SetObjectProperty("y", surfaceNormal.Y);
+			surfaceNormal1.SetObjectProperty("z", surfaceNormal.Z);
+
+			var res = getShapeTestResult.Call(native, rayHandle, hit, endCoords1, surfaceNormal1, entityHit);
+			var results = res as Array;
 			return ((int) results[0], (bool) results[1], JSObjectToVector3(results[2]), JSObjectToVector3(results[3]), (int) results[4]);
 		}
 

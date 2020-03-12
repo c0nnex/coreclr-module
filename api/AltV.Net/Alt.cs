@@ -6,7 +6,7 @@ namespace AltV.Net
 {
     public static partial class Alt
     {
-        internal static Module Module;
+        public static Module Module;
 
         public static IServer Server => Module.Server;
 
