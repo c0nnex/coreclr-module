@@ -12567,7 +12567,7 @@ namespace AltV.Net.Client
 		public double GetGameplayCamFov()
 		{
 			if (getGameplayCamFov == null) getGameplayCamFov = (Function) native.GetObjectProperty("getGameplayCamFov");
-			return (double) getGameplayCamFov.Call(native);
+			return System.Convert.ToDouble(getGameplayCamFov.Call(native));
 		}
 
 		/// <summary>
