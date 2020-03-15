@@ -1,6 +1,9 @@
-import * as alt from "alt";
+/// <reference path="h:/altv/node_modules/@altv/native-types/natives.d.ts" />
+/// <reference path="h:/altv/node_modules/@altv/types/types/altv-client.d.ts" />
+
+import * as alt from "alt-client";
 import * as natives from "natives";
-import {Player, LocalStorage, HandlingData, AreaBlip, RadiusBlip, PointBlip, WebView} from "alt";
+import {Player, LocalStorage, HandlingData, AreaBlip, RadiusBlip, PointBlip, WebView} from "alt-client";
 import resourceConfig from "@dotnet-runtime-config/config.js";
 
 var dllToResource = new Map();
@@ -133,8 +136,10 @@ var Module = {
             if (!altOnServerWrappers.has(eventName)) return;
             var h = altOnServerWrappers.get(eventName);
             h.off(handlerDelegate);
-        }
-
+                }
+                altWrapper["createVector3"] = function (x, y, z) {
+                    return new alt.Vector3(x, y, z);
+                }
         var webViewWrapper = {};
         for (const key in WebView) {
           webViewWrapper[key] = WebView[key];

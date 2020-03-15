@@ -90,6 +90,7 @@ namespace AltV.Net.Client
 
         private readonly Function toggleGameControls;
 
+        private readonly Function createVector3;
         public NativeAlt(JSObject alt)
         {
             this.alt = alt;
@@ -133,6 +134,8 @@ namespace AltV.Net.Client
             setWeatherSyncActive = (Function) alt.GetObjectProperty("setWeatherSyncActive");
             showCursor = (Function) alt.GetObjectProperty("showCursor");
             toggleGameControls = (Function) alt.GetObjectProperty("toggleGameControls");
+
+            createVector3 = (Function)alt.GetObjectProperty("createVector3");
         }
 
         public void Log(string message)
@@ -343,6 +346,11 @@ namespace AltV.Net.Client
         public void ToggleGameControls(bool state)
         {
             toggleGameControls.Call(alt, state);
+        }
+
+        public object CreateVector3(float x, float y, float z)
+        {
+            return createVector3.Call(alt, x, y, z);
         }
     }
 }

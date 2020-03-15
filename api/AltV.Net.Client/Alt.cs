@@ -412,5 +412,15 @@ namespace AltV.Net.Client
         {
             _alt.ToggleGameControls(state);
         }
+
+        public static object CreateVector3(float x, float y, float z)
+        {
+            return _alt.CreateVector3(x, y, z);
+        }
+
+        public static object CreateVector3(Vector3 v)
+        {
+            return _alt.CreateVector3(v.X,v.Y,v.Z);
+        }
     }
 }

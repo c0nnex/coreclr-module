@@ -22096,7 +22096,7 @@ namespace AltV.Net.Client
 		{
 			if (getGroundZFor3dCoord == null) getGroundZFor3dCoord = (Function) native.GetObjectProperty("getGroundZFor3dCoord");
 			var results = (Array) getGroundZFor3dCoord.Call(native, x, y, z, groundZ, unk, p5);
-			return ((bool) results[0], (double) results[1]);
+			return (System.Convert.ToBoolean(results[0]), System.Convert.ToDouble(results[1]));
 		}
 
 		/// <summary>
