@@ -140,6 +140,9 @@ var Module = {
                 altWrapper["createVector3"] = function (x, y, z) {
                     return new alt.Vector3(x, y, z);
                 }
+                altWrapper["getVehicleByScriptID"] = function (id) {
+                    return alt.Vehicle.getByScriptID(id);
+                }
         var webViewWrapper = {};
         for (const key in WebView) {
           webViewWrapper[key] = WebView[key];

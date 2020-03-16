@@ -7,6 +7,7 @@ using AltV.Net.Client.Elements;
 using AltV.Net.Client.EventHandlers;
 using AltV.Net.Client.Events;
 using WebAssembly;
+using WebAssembly.Core;
 
 namespace AltV.Net.Client
 {
@@ -422,5 +423,14 @@ namespace AltV.Net.Client
         {
             return _alt.CreateVector3(v.X,v.Y,v.Z);
         }
+
+        public static IVehicle GetVehicleByScriptID(int id)
+        {
+            JSObject rVal = ((Function)_alt.alt.GetObjectProperty("getVehicleByScriptID")).Call(null, id) as JSObject;
+            if (rVal != null)
+                return new Vehicle(rVal);
+            return null;
+        }
+
     }
 }

@@ -8,7 +8,7 @@ namespace AltV.Net.Client
 {
     internal class NativeAlt
     {
-        private readonly JSObject alt;
+        internal readonly JSObject alt;
 
         private readonly Function log;
 

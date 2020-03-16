@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using WebAssembly;
+using WebAssembly.Core;
 
 namespace AltV.Net.Client.Elements.Entities
 {
@@ -23,8 +24,11 @@ namespace AltV.Net.Client.Elements.Entities
 
         public int WheelsCount => (int) jsObject.GetObjectProperty("wheelsCount");
         
+
+
         internal Vehicle(JSObject jsObject): base(jsObject)
         {
         }
+
     }
 }
