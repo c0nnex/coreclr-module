@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using AltV.Net.Client.Events;
 using WebAssembly;
@@ -91,6 +92,10 @@ namespace AltV.Net.Client
         private readonly Function toggleGameControls;
 
         private readonly Function createVector3;
+
+        private readonly Function setTimeout;
+        private readonly Function clearTimeout;
+
         public NativeAlt(JSObject alt)
         {
             this.alt = alt;
@@ -136,6 +141,8 @@ namespace AltV.Net.Client
             toggleGameControls = (Function) alt.GetObjectProperty("toggleGameControls");
 
             createVector3 = (Function)alt.GetObjectProperty("createVector3");
+            setTimeout = (Function)alt.GetObjectProperty("setTimeout");
+            clearTimeout = (Function)alt.GetObjectProperty("clearTimeout");
         }
 
         public void Log(string message)
@@ -351,6 +358,16 @@ namespace AltV.Net.Client
         public object CreateVector3(float x, float y, float z)
         {
             return createVector3.Call(alt, x, y, z);
+        }
+
+        public int SetTimeout(Action action,int timeout)
+        {
+            return System.Convert.ToInt32(setTimeout.Call(alt, action, timeout));
+        }
+
+        public void ClearTimeout(int handle)
+        {
+            clearTimeout.Call(alt, handle);
         }
     }
 }

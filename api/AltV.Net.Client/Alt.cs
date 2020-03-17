@@ -432,5 +432,7 @@ namespace AltV.Net.Client
             return null;
         }
 
+        public static int SetTimeout(System.Action action, int timeout) => _alt.SetTimeout(action, timeout);
+        public static void ClearTimeout(int handle) => _alt.ClearTimeout(handle);
     }
 }
