@@ -33438,7 +33438,7 @@ namespace AltV.Net.Client
 		public int GetControlValue(int padIndex, int control)
 		{
 			if (getControlValue == null) getControlValue = (Function) native.GetObjectProperty("getControlValue");
-			return (int) getControlValue.Call(native, padIndex, control);
+			return System.Convert.ToInt32(getControlValue.Call(native, padIndex, control));
 		}
 
 		/// <summary>
@@ -33449,7 +33449,7 @@ namespace AltV.Net.Client
 		public double GetControlNormal(int padIndex, int control)
 		{
 			if (getControlNormal == null) getControlNormal = (Function) native.GetObjectProperty("getControlNormal");
-			return (double) getControlNormal.Call(native, padIndex, control);
+			return System.Convert.ToDouble(getControlNormal.Call(native, padIndex, control));
 		}
 
 		public void _0x5B73C77D9EB66E24(bool p0)

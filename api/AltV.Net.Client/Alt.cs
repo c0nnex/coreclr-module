@@ -432,6 +432,14 @@ namespace AltV.Net.Client
             return null;
         }
 
+        public static IVehicle GetPlayerByScriptID(int id)
+        {
+            JSObject rVal = ((Function)_alt.alt.GetObjectProperty("getPlayerByScriptID")).Call(null, id) as JSObject;
+            if (rVal != null)
+                return new Vehicle(rVal);
+            return null;
+        }
+
         public static int SetTimeout(System.Action action, int timeout) => _alt.SetTimeout(action, timeout);
         public static void ClearTimeout(int handle) => _alt.ClearTimeout(handle);
     }

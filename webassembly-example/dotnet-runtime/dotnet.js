@@ -141,8 +141,20 @@ var Module = {
                     return new alt.Vector3(x, y, z);
                 }
                 altWrapper["getVehicleByScriptID"] = function (id) {
-                    return alt.Vehicle.getByScriptID(id);
-                }
+                    return alt.Vehicle.all.find((v, i, _) => (v.scriptID == id));
+
+/*                    let r = alt.Vehicle.getByScriptID(id);
+                    alt.log("getVehicleByScriptIDWrapper ", id, r);
+                    return r;
+ */               }
+                altWrapper["getPlayerByScriptID"] = function (id) {
+                    return alt.Player.all.find((v, i, _) => (v.scriptID == id))
+
+/*                    let r = alt.Player.getByScriptID(id);
+                    alt.log("getPlayerByScriptIDWrapper ", id, r);
+                    return r;
+ */               }
+
         var webViewWrapper = {};
         for (const key in WebView) {
           webViewWrapper[key] = WebView[key];

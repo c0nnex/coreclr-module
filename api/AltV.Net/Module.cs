@@ -144,7 +144,7 @@ namespace AltV.Net
 
         private readonly Thread MainThread;
         
-        private readonly IDictionary<int, IDictionary<IBaseObject, ulong>> threadRefCount = new Dictionary<int, IDictionary<IBaseObject, ulong>>();
+        public readonly IDictionary<int, IDictionary<IBaseObject, ulong>> threadRefCount = new Dictionary<int, IDictionary<IBaseObject, ulong>>();
 
         public Module(IServer server, AssemblyLoadContext assemblyLoadContext,
             INativeResource moduleResource, IBaseBaseObjectPool baseBaseObjectPool,
