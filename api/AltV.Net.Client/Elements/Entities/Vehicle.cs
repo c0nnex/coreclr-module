@@ -10,7 +10,7 @@ namespace AltV.Net.Client.Elements.Entities
         
         public int Rpm => (int) jsObject.GetObjectProperty("rpm");
         
-        public int Speed => (int) jsObject.GetObjectProperty("speed");
+        public int Speed => System.Convert.ToInt32( jsObject.GetObjectProperty("speed"));
         
         public Vector3 SpeedVector
         {

@@ -22685,7 +22685,7 @@ namespace AltV.Net.Client
 		public (object, Vector3, Vector3) GetModelDimensions(int modelHash, Vector3 minimum, Vector3 maximum)
 		{
 			if (getModelDimensions == null) getModelDimensions = (Function) native.GetObjectProperty("getModelDimensions");
-			var results = (Array) getModelDimensions.Call(native, modelHash, minimum, maximum);
+			var results = (Array) getModelDimensions.Call(native, modelHash, null, null);
 			return (results[0], JSObjectToVector3(results[1]), JSObjectToVector3(results[2]));
 		}
 
@@ -51594,7 +51594,7 @@ namespace AltV.Net.Client
 		public double GetVehicleModelEstimatedMaxSpeed(int modelHash)
 		{
 			if (getVehicleModelEstimatedMaxSpeed == null) getVehicleModelEstimatedMaxSpeed = (Function) native.GetObjectProperty("getVehicleModelEstimatedMaxSpeed");
-			return (double) getVehicleModelEstimatedMaxSpeed.Call(native, modelHash);
+			return System.Convert.ToDouble(getVehicleModelEstimatedMaxSpeed.Call(native, modelHash));
 		}
 
 		/// <summary>
@@ -51603,7 +51603,7 @@ namespace AltV.Net.Client
 		public double GetVehicleModelMaxBraking(int modelHash)
 		{
 			if (getVehicleModelMaxBraking == null) getVehicleModelMaxBraking = (Function) native.GetObjectProperty("getVehicleModelMaxBraking");
-			return (double) getVehicleModelMaxBraking.Call(native, modelHash);
+			return System.Convert.ToDouble(getVehicleModelMaxBraking.Call(native, modelHash));
 		}
 
 		public double GetVehicleModelMaxBrakingMaxMods(int modelHash)
@@ -51618,7 +51618,7 @@ namespace AltV.Net.Client
 		public double GetVehicleModelMaxTraction(int modelHash)
 		{
 			if (getVehicleModelMaxTraction == null) getVehicleModelMaxTraction = (Function) native.GetObjectProperty("getVehicleModelMaxTraction");
-			return (double) getVehicleModelMaxTraction.Call(native, modelHash);
+			return System.Convert.ToDouble(getVehicleModelMaxTraction.Call(native, modelHash));
 		}
 
 		/// <summary>
@@ -51627,7 +51627,7 @@ namespace AltV.Net.Client
 		public double GetVehicleModelAcceleration(int modelHash)
 		{
 			if (getVehicleModelAcceleration == null) getVehicleModelAcceleration = (Function) native.GetObjectProperty("getVehicleModelAcceleration");
-			return (double) getVehicleModelAcceleration.Call(native, modelHash);
+			return System.Convert.ToDouble(getVehicleModelAcceleration.Call(native, modelHash));
 		}
 
 		/// <summary>
