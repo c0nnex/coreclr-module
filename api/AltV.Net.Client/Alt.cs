@@ -15,6 +15,7 @@ namespace AltV.Net.Client
     {
         private static NativeAlt _alt;
 
+        public static JSObject NativeObject => _alt.alt;
         public static NativeNatives Natives;
 
         internal static NativeLocalStorage LocalStorage;
