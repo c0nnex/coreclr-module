@@ -18,9 +18,9 @@ namespace AltV.Net
             Server.TriggerClientEvent(null, eventName, args);
 
         public static void Log(string message) => Server.LogInfo(message);
-
+        [Obsolete("Use Alt.Server.GetPlayers")]
         public static ICollection<IPlayer> GetAllPlayers() => Module.PlayerPool.GetAllEntities();
-
+        [Obsolete("Use Alt.Server.GetVehicles")]
         public static ICollection<IVehicle> GetAllVehicles() =>
             Module.VehiclePool.GetAllEntities();
 
