@@ -9,6 +9,7 @@
 #include <altv-cpp-api/SDK.h>
 #include <altv-cpp-api/events/CMetaDataChangeEvent.h>
 #include <altv-cpp-api/events/CSyncedMetaDataChangeEvent.h>
+#include <altv-cpp-api/events/CVehicleDestroyEvent.h>
 
 #ifdef _WIN32
 #define RESOURCES_PATH "\\resources\\"
@@ -148,6 +149,8 @@ typedef void (* WeaponDamageDelegate_t)(alt::IPlayer* source, void* target, alt:
 typedef void (* ExplosionDelegate_t)(alt::IPlayer* source, alt::CExplosionEvent::ExplosionType explosionType,
                                      position_t position, uint32_t explosionFX);
 
+typedef void (* VehicleDestroyDelegate_t)(alt::IVehicle* vehicle);
+
 class CSharpResourceImpl : public alt::IResource::Impl {
     bool OnEvent(const alt::CEvent* ev) override;
 
@@ -246,10 +249,51 @@ public:
 
     ColShapeDelegate_t OnColShapeDelegate = nullptr;
 
+    VehicleDestroyDelegate_t OnVehicleDestroyDelegate = nullptr;
+
     alt::Array<CustomInvoker*>* invokers;
     CoreClr* coreClr;
     alt::ICore* server;
     alt::IResource* resource;
+};
+
+class BaseObjectWeakReference : public alt::IWeakRef {
+
+public:
+    alt::Ref<alt::IBaseObject> baseObjectRef;
+    CSharpResourceImpl* cSharpResource;
+
+    BaseObjectWeakReference(alt::Ref<alt::IBaseObject> baseObjectRef, CSharpResourceImpl* cSharpResource) {
+        this->baseObjectRef = baseObjectRef;
+        this->cSharpResource = cSharpResource;
+    }
+
+    void OnDestroy() override {
+        auto object = this->baseObjectRef.Get();
+        if (object != nullptr) {
+            switch (object->GetType()) {
+                case alt::IBaseObject::Type::PLAYER:
+                    this->cSharpResource->OnRemovePlayerDelegate(dynamic_cast<alt::IPlayer*>(object));
+                    break;
+                case alt::IBaseObject::Type::VEHICLE:
+                    this->cSharpResource->OnRemoveVehicleDelegate(dynamic_cast<alt::IVehicle*>(object));
+                    break;
+                case alt::IBaseObject::Type::BLIP:
+                    this->cSharpResource->OnRemoveBlipDelegate(dynamic_cast<alt::IBlip*>(object));
+                    break;
+                case alt::IBaseObject::Type::VOICE_CHANNEL:
+                    this->cSharpResource->OnRemoveVoiceChannelDelegate(dynamic_cast<alt::IVoiceChannel*>(object));
+                    break;
+                case alt::IBaseObject::Type::COLSHAPE:
+                    this->cSharpResource->OnRemoveColShapeDelegate(dynamic_cast<alt::IColShape*>(object));
+                    break;
+                case alt::IBaseObject::Type::CHECKPOINT:
+                    this->cSharpResource->OnRemoveCheckpointDelegate(dynamic_cast<alt::ICheckpoint*>(object));
+                    break;
+            }
+        }
+        delete this;
+    }
 };
 
 EXPORT void CSharpResourceImpl_SetMainDelegate(CSharpResourceImpl* resource,
@@ -359,3 +403,6 @@ EXPORT void CSharpResourceImpl_SetRemoveColShapeDelegate(CSharpResourceImpl* res
 
 EXPORT void CSharpResourceImpl_SetColShapeDelegate(CSharpResourceImpl* resource,
                                                    ColShapeDelegate_t delegate);
+
+EXPORT void CSharpResourceImpl_SetVehicleDestroyDelegate(CSharpResourceImpl* resource,
+                                                   VehicleDestroyDelegate_t delegate);
