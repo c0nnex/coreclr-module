@@ -432,7 +432,13 @@ namespace AltV.Net.Client
                 return new Vehicle(rVal);
             return null;
         }
-
+        public static IVehicle GetVehicleByID(int id)
+        {
+            JSObject rVal = ((Function)_alt.alt.GetObjectProperty("getVehicleByID")).Call(null, id) as JSObject;
+            if (rVal != null)
+                return new Vehicle(rVal);
+            return null;
+        }
         public static IVehicle GetPlayerByScriptID(int id)
         {
             JSObject rVal = ((Function)_alt.alt.GetObjectProperty("getPlayerByScriptID")).Call(null, id) as JSObject;

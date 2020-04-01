@@ -163,18 +163,13 @@ var Module = {
                 }
                 altWrapper["getVehicleByScriptID"] = function (id) {
                     return alt.Vehicle.all.find((v, i, _) => (v.scriptID == id));
-
-/*                    let r = alt.Vehicle.getByScriptID(id);
-                    alt.log("getVehicleByScriptIDWrapper ", id, r);
-                    return r;
- */               }
+                }
+                altWrapper["getVehicleByID"] = function (id) {
+                    return alt.Vehicle.all.find((v, i, _) => (v.id == id));
+                }
                 altWrapper["getPlayerByScriptID"] = function (id) {
                     return alt.Player.all.find((v, i, _) => (v.scriptID == id))
-
-/*                    let r = alt.Player.getByScriptID(id);
-                    alt.log("getPlayerByScriptIDWrapper ", id, r);
-                    return r;
- */               }
+                }
                 altWrapper["loadModelAsync"] = function (model) {
                     requestModelPromise(model).then(() => alt.log("model loaded"));
                 }
@@ -4758,7 +4753,7 @@ var ERRNO_CODES = { EPERM: 63, ENOENT: 44, ESRCH: 71, EINTR: 27, EIO: 29, ENXIO:
         assert(SYSCALLS.get() === 0);
     }
 }; function ___syscall10(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // unlink
         var path = SYSCALLS.getStr();
@@ -5649,7 +5644,7 @@ function __write_sockaddr(sa, family, addr, port) {
     // kind of lame, but let's match _read_sockaddr's interface
     return {};
 } function ___syscall102(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // socketcall
         var call = SYSCALLS.get(), socketvararg = SYSCALLS.get();
@@ -5851,7 +5846,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall12(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // chdir
         var path = SYSCALLS.getStr();
@@ -5864,7 +5859,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall122(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // uname
         var buf = SYSCALLS.get();
@@ -5887,7 +5882,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall142(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // newselect
         // readfds are supported,
@@ -5976,7 +5971,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall144(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // msync
         var addr = SYSCALLS.get(), len = SYSCALLS.get(), flags = SYSCALLS.get();
@@ -5991,7 +5986,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall15(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // chmod
         var path = SYSCALLS.getStr(), mode = SYSCALLS.get();
@@ -6004,7 +5999,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall168(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // poll
         var fds = SYSCALLS.get(), nfds = SYSCALLS.get(), timeout = SYSCALLS.get();
@@ -6033,7 +6028,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall183(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // getcwd
         var buf = SYSCALLS.get(), size = SYSCALLS.get();
@@ -6128,7 +6123,7 @@ function _memset(ptr, value, num) {
     SYSCALLS.mappings[ptr] = { malloc: ptr, len: len, allocated: allocated, fd: fd, flags: flags, offset: off };
     return ptr;
 } function ___syscall192(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // mmap2
         var addr = SYSCALLS.get(), len = SYSCALLS.get(), prot = SYSCALLS.get(), flags = SYSCALLS.get(), fd = SYSCALLS.get(), off = SYSCALLS.get()
@@ -6140,7 +6135,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall194(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // ftruncate64
         var fd = SYSCALLS.get(), zero = SYSCALLS.getZero(), length = SYSCALLS.get64();
@@ -6153,7 +6148,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall195(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // SYS_stat64
         var path = SYSCALLS.getStr(), buf = SYSCALLS.get();
@@ -6165,7 +6160,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall196(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // SYS_lstat64
         var path = SYSCALLS.getStr(), buf = SYSCALLS.get();
@@ -6177,7 +6172,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall197(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // SYS_fstat64
         var stream = SYSCALLS.getStreamFromFD(), buf = SYSCALLS.get();
@@ -6190,7 +6185,7 @@ SYSCALLS.varargs = varargs;
 
 
 function ___syscall202(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // getgid32
         return 0;
@@ -6205,7 +6200,7 @@ SYSCALLS.varargs = varargs;
 
 
 var PROCINFO = { ppid: 1, pid: 42, sid: 42, pgid: 42 }; function ___syscall20(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // getpid
         return PROCINFO.pid;
@@ -6223,7 +6218,7 @@ function ___syscall201(a0, a1
 
 
 function ___syscall211(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // getresgid32
         var ruid = SYSCALLS.get(), euid = SYSCALLS.get(), suid = SYSCALLS.get();
@@ -6241,7 +6236,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall220(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // SYS_getdents64
         var stream = SYSCALLS.getStreamFromFD(), dirp = SYSCALLS.get(), count = SYSCALLS.get();
@@ -6287,7 +6282,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall221(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // fcntl64
         var stream = SYSCALLS.getStreamFromFD(), cmd = SYSCALLS.get();
@@ -6345,7 +6340,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall268(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // statfs64
         var path = SYSCALLS.getStr(), size = SYSCALLS.get(), buf = SYSCALLS.get();
@@ -6370,7 +6365,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall272(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // fadvise64_64
         return 0; // your advice is important to us (but we can't use it)
@@ -6381,7 +6376,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall3(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // read
         var stream = SYSCALLS.getStreamFromFD(), buf = SYSCALLS.get(), count = SYSCALLS.get();
@@ -6393,7 +6388,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall320(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // utimensat
         var dirfd = SYSCALLS.get(), path = SYSCALLS.getStr(), times = SYSCALLS.get(), flags = SYSCALLS.get();
@@ -6415,7 +6410,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall33(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // access
         var path = SYSCALLS.getStr(), amode = SYSCALLS.get();
@@ -6427,7 +6422,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall38(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // rename
         var old_path = SYSCALLS.getStr(), new_path = SYSCALLS.getStr();
@@ -6440,7 +6435,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall39(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // mkdir
         var path = SYSCALLS.getStr(), mode = SYSCALLS.get();
@@ -6452,7 +6447,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall4(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // write
         var stream = SYSCALLS.getStreamFromFD(), buf = SYSCALLS.get(), count = SYSCALLS.get();
@@ -6464,7 +6459,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall40(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // rmdir
         var path = SYSCALLS.getStr();
@@ -6477,7 +6472,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall41(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // dup
         var old = SYSCALLS.getStreamFromFD();
@@ -6688,7 +6683,7 @@ var PIPEFS = {
         return 'pipe[' + (PIPEFS.nextname.current++) + ']';
     }
 }; function ___syscall42(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // pipe
         var fdPtr = SYSCALLS.get();
@@ -6710,7 +6705,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall5(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // open
         var pathname = SYSCALLS.getStr(), flags = SYSCALLS.get(), mode = SYSCALLS.get(); // optional TODO
@@ -6723,7 +6718,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall54(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // ioctl
         var stream = SYSCALLS.getStreamFromFD(), op = SYSCALLS.get();
@@ -6778,7 +6773,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall63(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // dup2
         var old = SYSCALLS.getStreamFromFD(), suggestFD = SYSCALLS.get();
@@ -6791,7 +6786,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall77(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // getrusage
         var who = SYSCALLS.get(), usage = SYSCALLS.get();
@@ -6808,7 +6803,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall83(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // symlink
         var target = SYSCALLS.getStr(), linkpath = SYSCALLS.getStr();
@@ -6821,7 +6816,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall85(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // readlink
         var path = SYSCALLS.getStr(), buf = SYSCALLS.get(), bufsize = SYSCALLS.get();
@@ -6833,7 +6828,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall9(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // link
         var oldpath = SYSCALLS.get(), newpath = SYSCALLS.get();
@@ -6863,7 +6858,7 @@ function __emscripten_syscall_munmap(addr, len) {
     }
     return 0;
 } function ___syscall91(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // munmap
         var addr = SYSCALLS.get(), len = SYSCALLS.get();
@@ -6875,7 +6870,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall94(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // fchmod
         var fd = SYSCALLS.get(), mode = SYSCALLS.get();
@@ -6888,7 +6883,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall96(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // getpriority
         return 0;
@@ -6899,7 +6894,7 @@ SYSCALLS.varargs = varargs;
 }
 
 function ___syscall97(which, varargs) {
-SYSCALLS.varargs = varargs;
+    SYSCALLS.varargs = varargs;
     try {
         // setpriority
         return -63;
