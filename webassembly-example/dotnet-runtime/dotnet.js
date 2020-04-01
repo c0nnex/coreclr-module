@@ -68,6 +68,24 @@ function requestModelPromise(model) {
     });
 }
 
+export function requestAnimDictPromise(dict) {
+    return new Promise((resolve, reject) => {
+        if (natives.hasAnimDictLoaded(dict)) {
+            return resolve(true);
+        }
+        natives.requestAnimDict(dict);
+        let check = alt.setInterval(() => {
+
+            if (natives.hasAnimDictLoaded(dict)) {
+                alt.clearInterval(check);
+                resolve(true);
+            } else {
+            }
+
+        }, (0));
+    });
+}
+
 
 class LiteEvent {
 
@@ -100,6 +118,7 @@ var config = {
 
 var altOnServerWrappers = new Map();
 var altOnClientWrapper = new Map();
+var altAsyncWrappers = new Map();
 
 
 var Module = {
@@ -153,6 +172,17 @@ var Module = {
                     var h = altOnServerWrappers.get(eventName);
                     h.on(handlerDelegate);
                 }
+
+                altAsyncWrappers.set("loadModelAsync", new LiteEvent());
+                altAsyncWrappers.set("loadAnimDictAsync", new LiteEvent());
+
+                altWrapper["onAsync"] = function (eventName, handlerDelegate) {
+                    if (!altAsyncWrappers.has(eventName)) {
+                        altAsyncWrappers.set(eventName, new LiteEvent());
+                    }
+                    var h = altAsyncWrappers.get(eventName);
+                    h.on(handlerDelegate);
+                }
                 altWrapper["offServer"] = function (eventName, handlerDelegate) {
                     if (!altOnServerWrappers.has(eventName)) return;
                     var h = altOnServerWrappers.get(eventName);
@@ -170,9 +200,16 @@ var Module = {
                 altWrapper["getPlayerByScriptID"] = function (id) {
                     return alt.Player.all.find((v, i, _) => (v.scriptID == id))
                 }
-                altWrapper["loadModelAsync"] = function (model) {
-                    requestModelPromise(model).then(() => alt.log("model loaded"));
+                altWrapper["getPlayerByID"] = function (id) {
+                    return alt.Player.all.find((v, i, _) => (v.id == id));
                 }
+                altWrapper["loadModelAsync"] = function (model,asyncId) {
+                    requestModelPromise(model).then(() => altAsyncWrappers.get("loadModelAsync").emit(asyncId));
+                }
+                altWrapper["loadAnimDictAsync"] = function (dict, asyncId) {
+                    requestAnimDictPromise(dict).then(() => altAsyncWrappers.get("loadAnimDictAsync").emit(asyncId));
+                }
+
                 var webViewWrapper = {};
                 for (const key in WebView) {
                     webViewWrapper[key] = WebView[key];

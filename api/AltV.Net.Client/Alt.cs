@@ -42,6 +42,11 @@ namespace AltV.Net.Client
             NativeEventHandlers =
                 new Dictionary<string, NativeEventHandler<NativeEventDelegate, ServerEventDelegate>>();
 
+        private static readonly IDictionary<string, NativeEventHandler<NativeEventDelegate, ServerEventDelegate>>
+            NativeAsyncEventHandlers =
+                new Dictionary<string, NativeEventHandler<NativeEventDelegate, ServerEventDelegate>>();
+
+
         private static NativeEventHandler<ConnectionCompleteEventDelegate, ConnectionCompleteEventDelegate>
             _nativeConnectionCompleteHandler;
 
@@ -439,14 +444,40 @@ namespace AltV.Net.Client
                 return new Vehicle(rVal);
             return null;
         }
-        public static IVehicle GetPlayerByScriptID(int id)
+
+        
+        public static IPlayer GetPlayerByID(int id)
         {
-            JSObject rVal = ((Function)_alt.alt.GetObjectProperty("getPlayerByScriptID")).Call(null, id) as JSObject;
+            JSObject rVal = ((Function)_alt.alt.GetObjectProperty("getPlayerByID")).Call(null, id) as JSObject;
             if (rVal != null)
-                return new Vehicle(rVal);
+                return new Player(rVal);
             return null;
         }
 
+        public static IPlayer GetPlayerByScriptID(int id)
+        {
+            JSObject rVal = ((Function)_alt.alt.GetObjectProperty("getPlayerByScriptID")).Call(null, id) as JSObject;
+            if (rVal != null)
+                return new Player(rVal);
+            return null;
+        }
+
+        public static void RegisterAsyncCallBack(string eventName, NativeArgEventDelegate<long> serverEventDelegate)
+        {
+            ((Function)_alt.alt.GetObjectProperty("onAsync")).Call(null, eventName, serverEventDelegate);
+        }
+
+        public static void LoadAnimDictAsync(string dict, long asyncId)
+        {
+            ((Function)_alt.alt.GetObjectProperty("loadAnimDictAsync")).Call(null, dict,asyncId);
+        }
+
+        public static void LoadModelAsync(int model, long asyncId)
+        {
+            ((Function)_alt.alt.GetObjectProperty("loadModelAsync")).Call(null, model, asyncId);
+        }
+
+        
         public static int SetTimeout(System.Action action, int timeout) => _alt.SetTimeout(action, timeout);
         public static void ClearTimeout(int handle) => _alt.ClearTimeout(handle);
     }
