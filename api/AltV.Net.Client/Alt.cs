@@ -8,6 +8,7 @@ using AltV.Net.Client.EventHandlers;
 using AltV.Net.Client.Events;
 using WebAssembly;
 using WebAssembly.Core;
+using System.Text;
 
 namespace AltV.Net.Client
 {
@@ -19,15 +20,15 @@ namespace AltV.Net.Client
         public static NativeNatives Natives;
 
         internal static NativeLocalStorage LocalStorage;
-        
+
         internal static NativePlayer Player;
 
         internal static NativeHandlingData HandlingData;
 
         private static NativeAreaBlip AreaBlip;
-        
+
         private static NativeRadiusBlip RadiusBlip;
-        
+
         private static NativePointBlip PointBlip;
 
         private static IBaseObjectPool<IPlayer> PlayerPool;
@@ -52,11 +53,11 @@ namespace AltV.Net.Client
 
 
         private static NativeEventHandler<DisconnectEventDelegate, DisconnectEventDelegate> _nativeDisconnectHandler;
-        
+
         private static NativeEventHandler<EveryTickEventDelegate, EveryTickEventDelegate> _nativeEveryTickHandler;
-        
+
         private static NativeEventHandler<NativeGameEntityCreateEventDelegate, GameEntityCreateEventDelegate> _nativeGameEntityCreateHandler;
-        
+
         private static NativeEventHandler<NativeGameEntityDestroyEventDelegate, GameEntityDestroyEventDelegate> _nativeGameEntityDestroyHandler;
 
         private static NativeEventHandler<KeyDownEventDelegate, KeyDownEventDelegate> _nativeKeyDownHandler;
@@ -92,7 +93,7 @@ namespace AltV.Net.Client
             }
             remove => _nativeDisconnectHandler?.Remove(value);
         }
-        
+
         public static event EveryTickEventDelegate OnEveryTick
         {
             add
@@ -107,7 +108,7 @@ namespace AltV.Net.Client
             }
             remove => _nativeEveryTickHandler?.Remove(value);
         }
-        
+
         public static event GameEntityCreateEventDelegate OnGameEntityCreate
         {
             add
@@ -122,7 +123,7 @@ namespace AltV.Net.Client
             }
             remove => _nativeGameEntityCreateHandler?.Remove(value);
         }
-        
+
         public static event GameEntityDestroyEventDelegate OnGameEntityDestroy
         {
             add
@@ -150,7 +151,8 @@ namespace AltV.Net.Client
 
                 _nativeKeyDownHandler.Add(value);
             }
-            remove {
+            remove
+            {
                 _nativeKeyDownHandler?.Remove(value);
             }
         }
@@ -181,15 +183,15 @@ namespace AltV.Net.Client
         public static void Init(object wrapper, IBaseObjectFactory<IPlayer> playerFactory)
         {
             PlayerPool = new BaseObjectPool<IPlayer>(playerFactory);
-            var jsWrapper = (JSObject) wrapper;
-            _alt = new NativeAlt((JSObject) jsWrapper.GetObjectProperty("alt"));
-            Natives = new NativeNatives((JSObject) jsWrapper.GetObjectProperty("natives"));
-            LocalStorage = new NativeLocalStorage((JSObject) jsWrapper.GetObjectProperty("LocalStorage"));
-            Player = new NativePlayer((JSObject) jsWrapper.GetObjectProperty("Player"), PlayerPool);
-            HandlingData = new NativeHandlingData((JSObject) jsWrapper.GetObjectProperty("HandlingData"));
-            AreaBlip = new NativeAreaBlip((JSObject) jsWrapper.GetObjectProperty("AreaBlip"));
-            RadiusBlip = new NativeRadiusBlip((JSObject) jsWrapper.GetObjectProperty("RadiusBlip"));
-            PointBlip = new NativePointBlip((JSObject) jsWrapper.GetObjectProperty("PointBlip"));
+            var jsWrapper = (JSObject)wrapper;
+            _alt = new NativeAlt((JSObject)jsWrapper.GetObjectProperty("alt"));
+            Natives = new NativeNatives((JSObject)jsWrapper.GetObjectProperty("natives"));
+            LocalStorage = new NativeLocalStorage((JSObject)jsWrapper.GetObjectProperty("LocalStorage"));
+            Player = new NativePlayer((JSObject)jsWrapper.GetObjectProperty("Player"), PlayerPool);
+            HandlingData = new NativeHandlingData((JSObject)jsWrapper.GetObjectProperty("HandlingData"));
+            AreaBlip = new NativeAreaBlip((JSObject)jsWrapper.GetObjectProperty("AreaBlip"));
+            RadiusBlip = new NativeRadiusBlip((JSObject)jsWrapper.GetObjectProperty("RadiusBlip"));
+            PointBlip = new NativePointBlip((JSObject)jsWrapper.GetObjectProperty("PointBlip"));
             WebView = new NativeWebView((JSObject)jsWrapper.GetObjectProperty("WebView"));
         }
 
@@ -309,7 +311,24 @@ namespace AltV.Net.Client
 
         public static int Hash(string hashString)
         {
-            return _alt.Hash(hashString);
+            if (string.IsNullOrEmpty(hashString)) return 0;
+
+            var characters = Encoding.UTF8.GetBytes(hashString.ToLower());
+
+            int hash = 0;
+
+            foreach (var c in characters)
+            {
+                hash += c;
+                hash += hash << 10;
+                hash ^= hash >> 6;
+            }
+
+            hash += hash << 3;
+            hash ^= hash >> 11;
+            hash += hash << 15;
+
+            return hash;
         }
 
         public static bool IsConsoleOpen()
@@ -427,7 +446,7 @@ namespace AltV.Net.Client
 
         public static object CreateVector3(Vector3 v)
         {
-            return _alt.CreateVector3(v.X,v.Y,v.Z);
+            return _alt.CreateVector3(v.X, v.Y, v.Z);
         }
 
         public static IVehicle GetVehicleByScriptID(int id)
@@ -445,7 +464,7 @@ namespace AltV.Net.Client
             return null;
         }
 
-        
+
         public static IPlayer GetPlayerByID(int id)
         {
             JSObject rVal = ((Function)_alt.alt.GetObjectProperty("getPlayerByID")).Call(null, id) as JSObject;
@@ -469,7 +488,7 @@ namespace AltV.Net.Client
 
         public static void LoadAnimDictAsync(string dict, long asyncId)
         {
-            ((Function)_alt.alt.GetObjectProperty("loadAnimDictAsync")).Call(null, dict,asyncId);
+            ((Function)_alt.alt.GetObjectProperty("loadAnimDictAsync")).Call(null, dict, asyncId);
         }
 
         public static void LoadModelAsync(int model, long asyncId)
@@ -477,7 +496,7 @@ namespace AltV.Net.Client
             ((Function)_alt.alt.GetObjectProperty("loadModelAsync")).Call(null, model, asyncId);
         }
 
-        
+
         public static int SetTimeout(System.Action action, int timeout) => _alt.SetTimeout(action, timeout);
         public static void ClearTimeout(int handle) => _alt.ClearTimeout(handle);
     }
