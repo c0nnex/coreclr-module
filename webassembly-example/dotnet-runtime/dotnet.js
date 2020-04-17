@@ -49,7 +49,8 @@ for (const resourceName in resourceConfig.resources) {
     }
 }
 
-function requestModelPromise(model) {
+function requestModelPromise(mdl) {
+    var model = mdl;
     return new Promise((resolve, reject) => {
         if (!natives.isModelValid(model))
             return resolve(false);
@@ -64,11 +65,12 @@ function requestModelPromise(model) {
             } else {
             }
 
-        }, (0));
+        }, (5));
     });
 }
 
-export function requestAnimDictPromise(dict) {
+function requestAnimDictPromise(dct) {
+    var dict = dct;
     return new Promise((resolve, reject) => {
         if (natives.hasAnimDictLoaded(dict)) {
             return resolve(true);
@@ -77,12 +79,14 @@ export function requestAnimDictPromise(dict) {
         let check = alt.setInterval(() => {
 
             if (natives.hasAnimDictLoaded(dict)) {
+                alt.log(dict + " has loaded. Fire");
                 alt.clearInterval(check);
                 resolve(true);
             } else {
+                alt.log("Waiting for " + dict);
             }
 
-        }, (0));
+        }, (5));
     });
 }
 
@@ -164,13 +168,31 @@ var Module = {
 
 
                 // wrapping onServer Delegates to allow ellipsis transfer to dotnet
-                altWrapper["onServer"] = function (eventName, handlerDelegate) {
+                altWrapper["onServerElipsis"] = function (eventName, handlerDelegate) {
                     if (!altOnServerWrappers.has(eventName)) {
                         altOnServerWrappers.set(eventName, new LiteEvent());
                         alt.onServer(eventName, (...args) => altOnServerWrappers.get(eventName).emit(args));
                     }
                     var h = altOnServerWrappers.get(eventName);
                     h.on(handlerDelegate);
+                }
+                altWrapper["offServerElipsis"] = function (eventName, handlerDelegate) {
+                    if (!altOnServerWrappers.has(eventName)) return;
+                    var h = altOnServerWrappers.get(eventName);
+                    h.off(handlerDelegate);
+                }
+                altWrapper["onClientElipsis"] = function (eventName, handlerDelegate) {
+                    if (!altOnClientWrapper.has(eventName)) {
+                        altOnClientWrapper.set(eventName, new LiteEvent());
+                        alt.on(eventName, (...args) => altOnClientWrapper.get(eventName).emit(args));
+                    }
+                    var h = altOnClientWrapper.get(eventName);
+                    h.on(handlerDelegate);
+                }
+                altWrapper["offClientElipsis"] = function (eventName, handlerDelegate) {
+                    if (!altOnClientWrapper.has(eventName)) return;
+                    var h = altOnClientWrapper.get(eventName);
+                    h.off(handlerDelegate);
                 }
 
                 altAsyncWrappers.set("loadModelAsync", new LiteEvent());
@@ -183,11 +205,7 @@ var Module = {
                     var h = altAsyncWrappers.get(eventName);
                     h.on(handlerDelegate);
                 }
-                altWrapper["offServer"] = function (eventName, handlerDelegate) {
-                    if (!altOnServerWrappers.has(eventName)) return;
-                    var h = altOnServerWrappers.get(eventName);
-                    h.off(handlerDelegate);
-                }
+               
                 altWrapper["createVector3"] = function (x, y, z) {
                     return new alt.Vector3(x, y, z);
                 }

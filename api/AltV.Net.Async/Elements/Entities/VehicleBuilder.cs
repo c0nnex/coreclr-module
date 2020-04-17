@@ -168,6 +168,18 @@ namespace AltV.Net.Async.Elements.Entities
             return this;
         }
 
+        public IVehicleBuilder Appearance(string value)
+        {
+            Add(ptr => AltNative.Vehicle.Vehicle_LoadAppearanceDataFromBase64(ptr, value));
+            return this;
+        }
+
+        public IVehicleBuilder ScriptData(string value)
+        {
+            Add(ptr => AltNative.Vehicle.Vehicle_LoadScriptDataFromBase64(ptr, value));
+            return this;
+        }
+
         public IVehicleBuilder EngineHealth(int value)
         {
             Add(ptr => AltNative.Vehicle.Vehicle_SetEngineHealth(ptr, value));

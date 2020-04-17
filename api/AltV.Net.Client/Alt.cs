@@ -146,7 +146,7 @@ namespace AltV.Net.Client
                 if (_nativeKeyDownHandler == null)
                 {
                     _nativeKeyDownHandler = new KeyDownEventHandler();
-                    _alt.On("keydown", _nativeKeyDownHandler.GetNativeEventHandler());
+                    _alt.OnSimple("keydown", _nativeKeyDownHandler.GetNativeEventHandler());
                 }
 
                 _nativeKeyDownHandler.Add(value);
@@ -164,7 +164,7 @@ namespace AltV.Net.Client
                 if (_nativeKeyUpHandler == null)
                 {
                     _nativeKeyUpHandler = new KeyUpEventHandler();
-                    _alt.On("keyup", _nativeKeyUpHandler.GetNativeEventHandler());
+                    _alt.OnSimple("keyup", _nativeKeyUpHandler.GetNativeEventHandler());
                 }
 
                 _nativeKeyUpHandler.Add(value);
@@ -195,9 +195,14 @@ namespace AltV.Net.Client
             WebView = new NativeWebView((JSObject)jsWrapper.GetObjectProperty("WebView"));
         }
 
-        public static void Log(string message)
+        public static void Log(string message,params object[] args)
         {
-            _alt.Log(message);
+            if (args != null && args.Length > 0)
+            {
+                _alt.Log(message + " "+ string.Join(" ", args));
+            }
+            else
+                _alt.Log(message);
         }
 
         public static void LogError(string message)
@@ -481,17 +486,17 @@ namespace AltV.Net.Client
             return null;
         }
 
-        public static void RegisterAsyncCallBack(string eventName, NativeArgEventDelegate<long> serverEventDelegate)
+        public static void RegisterAsyncCallBack(string eventName, NativeArgEventDelegate<int> serverEventDelegate)
         {
             ((Function)_alt.alt.GetObjectProperty("onAsync")).Call(null, eventName, serverEventDelegate);
         }
 
-        public static void LoadAnimDictAsync(string dict, long asyncId)
+        public static void LoadAnimDictAsync(string dict, int asyncId)
         {
             ((Function)_alt.alt.GetObjectProperty("loadAnimDictAsync")).Call(null, dict, asyncId);
         }
 
-        public static void LoadModelAsync(int model, long asyncId)
+        public static void LoadModelAsync(int model, int asyncId)
         {
             ((Function)_alt.alt.GetObjectProperty("loadModelAsync")).Call(null, model, asyncId);
         }

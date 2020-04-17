@@ -641,6 +641,9 @@ namespace AltV.Net
                 case bool value:
                     CreateMValueBool(out mValue, value);
                     return;
+                case byte value:
+                    CreateMValueInt(out mValue, value);
+                    return;
                 case int value:
                     CreateMValueInt(out mValue, value);
                     return;
@@ -781,7 +784,7 @@ namespace AltV.Net
                     CreateMValueVector3(out mValue, position);
                     return;
                 default:
-                    Alt.Log("can't convert type:" + obj.GetType());
+                    Alt.Log("can't convert type:" + obj.GetType() + " "+ (new StackTrace().ToString()));
                     mValue = MValueConst.Nil;
                     return;
             }

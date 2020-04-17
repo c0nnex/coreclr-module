@@ -21,6 +21,10 @@ namespace AltV.Net.Client
 
         private readonly Function off;
 
+        private readonly Function onSimple;
+
+        private readonly Function offSimple;
+
         private readonly Function onServer;
 
         private readonly Function offServer;
@@ -102,10 +106,12 @@ namespace AltV.Net.Client
             log = (Function) alt.GetObjectProperty("log");
             logError = (Function) alt.GetObjectProperty("logError");
             logWarning = (Function) alt.GetObjectProperty("logWarning");
-            on = (Function) alt.GetObjectProperty("on");
-            off = (Function) alt.GetObjectProperty("off");
-            onServer = (Function) alt.GetObjectProperty("onServer");
-            offServer = (Function) alt.GetObjectProperty("offServer");
+            on = (Function) alt.GetObjectProperty("onClientElipsis");
+            off = (Function) alt.GetObjectProperty("offClientElipsis");
+            onSimple = (Function)alt.GetObjectProperty("on");
+            offSimple = (Function)alt.GetObjectProperty("off");
+            onServer = (Function) alt.GetObjectProperty("onServerElipsis");
+            offServer = (Function) alt.GetObjectProperty("offServerElipsis");
             emit = (Function) alt.GetObjectProperty("emit");
             emitServer = (Function) alt.GetObjectProperty("emitServer");
             everyTick = (Function) alt.GetObjectProperty("everyTick");
@@ -169,7 +175,15 @@ namespace AltV.Net.Client
         {
             off.Call(alt, eventName, eventHandler);
         }
+        public void OnSimple(string eventName, object eventHandler)
+        {
+            onSimple.Call(alt, eventName, eventHandler);
+        }
 
+        public void OffSimple(string eventName, object eventHandler)
+        {
+            offSimple.Call(alt, eventName, eventHandler);
+        }
         public void OnServer(string eventName, NativeEventDelegate serverEventDelegate)
         {
             onServer.Call(alt, eventName, serverEventDelegate);
