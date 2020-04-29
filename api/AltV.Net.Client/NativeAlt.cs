@@ -100,6 +100,10 @@ namespace AltV.Net.Client
         private readonly Function setTimeout;
         private readonly Function clearTimeout;
 
+        private readonly Function setInterval;
+        private readonly Function clearInterval;
+
+
         public NativeAlt(JSObject alt)
         {
             this.alt = alt;
@@ -149,6 +153,8 @@ namespace AltV.Net.Client
             createVector3 = (Function)alt.GetObjectProperty("createVector3");
             setTimeout = (Function)alt.GetObjectProperty("setTimeout");
             clearTimeout = (Function)alt.GetObjectProperty("clearTimeout");
+            setInterval = (Function)alt.GetObjectProperty("setInterval");
+            clearInterval = (Function)alt.GetObjectProperty("clearInterval");
         }
 
         public void Log(string message)
@@ -382,6 +388,16 @@ namespace AltV.Net.Client
         public void ClearTimeout(int handle)
         {
             clearTimeout.Call(alt, handle);
+        }
+ 
+        public int SetInterval(Action action, int timeout)
+        {
+            return System.Convert.ToInt32(setInterval.Call(alt, action, timeout));
+        }
+
+        public void ClearInterval(int handle)
+        {
+            clearInterval.Call(alt, handle);
         }
     }
 }

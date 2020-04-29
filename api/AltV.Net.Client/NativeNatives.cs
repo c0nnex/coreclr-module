@@ -14619,7 +14619,7 @@ namespace AltV.Net.Client
 		public double DecorGetFloat(int entity, string propertyName)
 		{
 			if (decorGetFloat == null) decorGetFloat = (Function) native.GetObjectProperty("decorGetFloat");
-			return (double) decorGetFloat.Call(native, entity, propertyName);
+			return System.Convert.ToDouble(decorGetFloat.Call(native, entity, propertyName));
 		}
 
 		public int DecorGetInt(int entity, string propertyName)

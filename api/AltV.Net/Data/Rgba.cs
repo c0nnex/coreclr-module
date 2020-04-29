@@ -36,6 +36,14 @@ namespace AltV.Net.Data
         public byte B;
         public byte A;
 
+        public Rgba(int rgbaValue)
+        {
+            var col = Color.FromArgb(Convert.ToInt32(rgbaValue));
+            R = col.R;
+            G = col.G;
+            B = col.B;
+            A = col.A;
+        }
         public Rgba(byte r, byte g, byte b, byte a)
         {
             R = r;
