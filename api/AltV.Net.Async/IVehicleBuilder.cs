@@ -39,6 +39,7 @@ namespace AltV.Net.Async
         IVehicleBuilder DamageData(string value);
         IVehicleBuilder Appearance(string value);
         IVehicleBuilder ScriptData(string value);
+
         Task<IVehicle> Build();
     }
 }

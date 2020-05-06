@@ -30,6 +30,7 @@ namespace AltV.Net.Async
                 entity.GetSyncedMetaData<T>(key, out var value);
                 return value;
             });
+
         public static async Task SetStreamSyncedMetaDataAsync(this IEntity entity, string key, object value)
         {
             Alt.Server.CreateMValue(out var mValue, value);

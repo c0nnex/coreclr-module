@@ -3,7 +3,7 @@
 
 import * as alt from "alt-client";
 import * as natives from "natives";
-import { Player, LocalStorage, HandlingData, AreaBlip, RadiusBlip, PointBlip, WebView } from "alt-client";
+import {Player, LocalStorage, HandlingData, AreaBlip, RadiusBlip, PointBlip, WebView} from "alt";
 import resourceConfig from "@dotnet-runtime-config/config.js";
 
 var crypto = { getRandomValues: function (array) { for (var i = 0; i < array.length; i++) array[i] = (Math.random() * 256) | 0 } };

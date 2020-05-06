@@ -120,8 +120,6 @@ namespace AltV.Net.Native
 
             internal delegate void ColShapeDelegate(IntPtr colShapePointer, IntPtr targetEntityPointer,
                 BaseObjectType entityType, bool state);
-            
-            internal delegate void VehicleDestroyDelegate(IntPtr vehiclePointer);
 
             internal delegate void ConsoleCommandDelegate(string name, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] args, int argsSize);
 
@@ -131,7 +129,7 @@ namespace AltV.Net.Native
             internal delegate void ExplosionDelegate(IntPtr playerPointer, ExplosionType explosionType,
                 Position position, uint explosionFx);
 
-            internal delegate void WeaponDamageDelegate(IntPtr playerPointer, IntPtr entityPointer,
+            internal delegate void WeaponDamageDelegate(IntPtr eventPointer, IntPtr playerPointer, IntPtr entityPointer,
                 BaseObjectType entityType, uint weapon, ushort damage, Position shotOffset, BodyPart bodyPart);
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
@@ -277,10 +275,6 @@ namespace AltV.Net.Native
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
             internal static extern void CSharpResourceImpl_SetColShapeDelegate(IntPtr resource,
                 ColShapeDelegate @delegate);
-            
-            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
-            internal static extern void CSharpResourceImpl_SetVehicleDestroyDelegate(IntPtr resource,
-                VehicleDestroyDelegate @delegate);
         }
     }
 }
