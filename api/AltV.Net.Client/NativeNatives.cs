@@ -39556,7 +39556,7 @@ namespace AltV.Net.Client
 		public double RopeGetDistanceBetweenEnds(int ropeId)
 		{
 			if (ropeGetDistanceBetweenEnds == null) ropeGetDistanceBetweenEnds = (Function) native.GetObjectProperty("ropeGetDistanceBetweenEnds");
-			return (double) ropeGetDistanceBetweenEnds.Call(native, ropeId);
+			return System.Convert.ToDouble( ropeGetDistanceBetweenEnds.Call(native, ropeId));
 		}
 
 		/// <summary>

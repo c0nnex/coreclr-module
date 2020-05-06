@@ -45,7 +45,7 @@ namespace AltV.Net.Client.Elements
         {
             if (!NativeEventHandlers.TryGetValue(eventName, out var nativeEventHandler))
             {
-                nativeEventHandler = new NativeServerEventHandler();
+                nativeEventHandler = new NativeServerEventHandler(eventName);
                 nativeWebView.On(eventName, nativeEventHandler.GetNativeEventHandler());
                 NativeEventHandlers[eventName] = nativeEventHandler;
             }

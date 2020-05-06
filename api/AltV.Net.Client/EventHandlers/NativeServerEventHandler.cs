@@ -7,9 +7,11 @@ namespace AltV.Net.Client.EventHandlers
     internal class NativeServerEventHandler : NativeEventHandler<NativeEventDelegate, ServerEventDelegate>
     {
         private readonly NativeEventDelegate nativeEventDelegate;
+        private string eventName;
 
-        public NativeServerEventHandler()
+        public NativeServerEventHandler(string name)
         {
+            eventName = name;
             nativeEventDelegate = new NativeEventDelegate(OnNativeEvent);
         }
 
@@ -32,7 +34,7 @@ namespace AltV.Net.Client.EventHandlers
                 {
                     args = new object[0];
                 }
-
+                Alt.Log("OnServer " + eventName, args);
                 while (scriptEventHandler != null)
                 {
                     scriptEventHandler.Value(args);

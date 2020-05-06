@@ -199,7 +199,7 @@ namespace AltV.Net.Client
         {
             if (args != null && args.Length > 0)
             {
-                _alt.Log(message + " "+ string.Join(" ", args));
+                _alt.Log(message + " ["+ string.Join(" , ", args)+" ]");
             }
             else
                 _alt.Log(message);
@@ -229,7 +229,7 @@ namespace AltV.Net.Client
         {
             if (!NativeServerEventHandlers.TryGetValue(eventName, out var nativeEventHandler))
             {
-                nativeEventHandler = new NativeServerEventHandler();
+                nativeEventHandler = new NativeServerEventHandler(eventName);
                 _alt.OnServer(eventName, nativeEventHandler.GetNativeEventHandler());
                 NativeServerEventHandlers[eventName] = nativeEventHandler;
             }
@@ -251,7 +251,7 @@ namespace AltV.Net.Client
         {
             if (!NativeEventHandlers.TryGetValue(eventName, out var nativeEventHandler))
             {
-                nativeEventHandler = new NativeServerEventHandler();
+                nativeEventHandler = new NativeServerEventHandler(eventName);
                 _alt.On(eventName, nativeEventHandler.GetNativeEventHandler());
                 NativeEventHandlers[eventName] = nativeEventHandler;
             }
