@@ -52,7 +52,7 @@ Otherwise the server would end up crashing by accessing the player position of a
 Note: locking the player when its already locked will end up in a deadlock. Never do this E.g. ```lock (player) { lock (player) {  } }```
 Locks also work accross method calls so be careful.
 ```if (player.Exists) {```
-This if check is optional, because not checking it won't crash the server, but will throw a exception when the player doesn't esists anymore.
+This if check is optional, because not checking it won't crash the server, but will throw a exception when the player doesn't exist anymore.
 ```position = player.Position```
 Here we assign the position to the value we declared above. This is essential because no heavy calculations should happen inside a lock statement and the assign makes it possible to use the player position outside the lock statement for e.g. distance calculatione.
 
@@ -78,3 +78,21 @@ var vehicle = await AltAsync.Do(() => {
   var vehicle2 = Alt.CreateVehicle(VehicleModel.Chimera, player.Position, player.Rotation);
 });
 ```
+
+## Threadsafe methods from `AltV.Net.Alt`
+
+### Entity pools
+
+The `AltV.Net.Async.AltAsync` class does not provide methods to interact with entity pools/lists. If you are using an `AsyncResource`, the methods for entity pooling on `AltV.Net.Alt` are overwritten and are threadsafe to use. This includes the following methods:
+
+```csharp
+public override IBaseEntityPool GetBaseEntityPool(IEntityPool<IPlayer> playerPool, IEntityPool<IVehicle> vehiclePool);
+public override IBaseObjectPool<IBlip> GetBlipPool(IBaseObjectFactory<IBlip> blipFactory);
+public override IBaseObjectPool<ICheckpoint> GetCheckpointPool(IBaseObjectFactory<ICheckpoint> checkpointFactory);
+public override IBaseObjectPool<IColShape> GetColShapePool(IBaseObjectFactory<IColShape> colShapeFactory);
+public override IEntityPool<IPlayer> GetPlayerPool(IEntityFactory<IPlayer> playerFactory);
+public override IEntityPool<IVehicle> GetVehiclePool(IEntityFactory<IVehicle> vehicleFactory);
+public override IBaseObjectPool<IVoiceChannel> GetVoiceChannelPool(IBaseObjectFactory<IVoiceChannel> voiceChannelFactory);
+```
+
+as they are overwritten in the `AsyncResource` class.

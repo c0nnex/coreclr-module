@@ -33,6 +33,8 @@ namespace AltV.Net.Events
 
     public delegate void PlayerEnterVehicleDelegate(IVehicle vehicle, IPlayer player, byte seat);
 
+    public delegate void PlayerEnteringVehicleDelegate(IVehicle vehicle, IPlayer player, byte seat);
+
     public delegate void PlayerLeaveVehicleDelegate(IVehicle vehicle, IPlayer player, byte seat);
 
     public delegate void ServerEventEventDelegate(string eventName, object[] args);
@@ -45,9 +47,23 @@ namespace AltV.Net.Events
 
     public delegate void ColShapeDelegate(IColShape colShape, IEntity targetEntity, bool state);
 
-    public delegate void ExplosionDelegate(IPlayer player, ExplosionType explosionType, Position position,
-        uint explosionFx);
+    public delegate bool ExplosionDelegate(IPlayer player, ExplosionType explosionType, Position position,
+        uint explosionFx, IEntity targetEntity);
 
-    public delegate void WeaponDamageDelegate(IPlayer player, IEntity target, uint weapon, ushort damage,
+    public delegate bool WeaponDamageDelegate(IPlayer player, IEntity target, uint weapon, ushort damage,
         Position shotOffset, BodyPart bodyPart);
+    
+    public delegate void VehicleDestroyDelegate(IVehicle vehicle);
+    
+    public delegate bool FireDelegate(IPlayer player, FireInfo[] fireInfos);
+    
+    public delegate bool StartProjectileDelegate(IPlayer player, Position startPosition, Position direction, uint ammoHash, uint weaponHash);
+    
+    public delegate bool PlayerWeaponChangeDelegate(IPlayer player, uint oldWeapon, uint newWeapon);
+    
+    public delegate void NetOwnerChangeDelegate(IEntity target, IPlayer oldNetOwner, IPlayer newNetOwner);
+    
+    public delegate void VehicleAttachDelegate(IVehicle target, IVehicle attachedVehicle);
+    
+    public delegate void VehicleDetachDelegate(IVehicle target, IVehicle detachedVehicle);
 }

@@ -42,9 +42,43 @@ namespace AltV.Net
 
         private readonly INativeResourcePool nativeResourcePool;
 
+        private string version;
+
+        private string branch;
+
+        public string Version
+        {
+            get
+            {
+                if (version != null) return version;
+                var ptr = IntPtr.Zero;
+                ulong size = 0;
+                AltNative.Server.Core_GetVersion(NativePointer, ref ptr, ref size);
+                version = Marshal.PtrToStringUTF8(ptr, (int) size);
+
+                return version;
+            }
+        }
+
+        public string Branch
+        {
+            get
+            {
+                if (branch != null) return branch;
+                var ptr = IntPtr.Zero;
+                ulong size = 0;
+                AltNative.Server.Core_GetBranch(NativePointer, ref ptr, ref size);
+                branch = Marshal.PtrToStringUTF8(ptr, (int) size);
+
+                return branch;
+            }
+        }
+
         public int NetTime => AltNative.Server.Server_GetNetTime(NativePointer);
 
         private string rootDirectory;
+
+        private bool? isDebug;
 
         public string RootDirectory
         {
@@ -56,6 +90,16 @@ namespace AltV.Net
                 rootDirectory = Marshal.PtrToStringUTF8(ptr);
 
                 return rootDirectory;
+            }
+        }
+
+        public bool IsDebug
+        {
+            get
+            {
+                if (isDebug.HasValue) return isDebug.Value;
+                isDebug = AltNative.Server.Core_IsDebug(NativePointer);
+                return isDebug.Value;
             }
         }
 
@@ -289,7 +333,9 @@ namespace AltV.Net
             CheckIfCallIsValid();
             ushort id = default;
             var ptr = AltNative.Server.Server_CreateVehicle(NativePointer, model, pos, rotation, ref id);
-            return vehiclePool.Get(ptr, out var vehicle) ? vehicle : null;
+            if (ptr == IntPtr.Zero) return null;
+            vehiclePool.Create(ptr, id, out var vehicle);
+            return vehicle;
         }
 
         public ICheckpoint CreateCheckpoint(byte type, Position pos, float radius, float height,
@@ -297,7 +343,9 @@ namespace AltV.Net
         {
             CheckIfCallIsValid();
             var ptr = AltNative.Server.Server_CreateCheckpoint(NativePointer, type, pos, radius, height, color);
-            return checkpointPool.Get(ptr, out var checkpoint) ? checkpoint : null;
+            if (ptr == IntPtr.Zero) return null;
+            checkpointPool.Create(ptr, out var checkpoint);
+            return checkpoint;
         }
 
         public IBlip CreateBlip(IPlayer player, byte type, Position pos)
@@ -305,7 +353,9 @@ namespace AltV.Net
             CheckIfCallIsValid();
             var ptr = AltNative.Server.Server_CreateBlip(NativePointer, player?.NativePointer ?? IntPtr.Zero,
                 type, pos);
-            return blipPool.Get(ptr, out var blip) ? blip : null;
+            if (ptr == IntPtr.Zero) return null;
+            blipPool.Create(ptr, out var blip);
+            return blip;
         }
 
         public IBlip CreateBlip(IPlayer player, byte type, IEntity entityAttach)
@@ -314,7 +364,9 @@ namespace AltV.Net
             var ptr = AltNative.Server.Server_CreateBlipAttached(NativePointer,
                 player?.NativePointer ?? IntPtr.Zero,
                 type, entityAttach.NativePointer);
-            return blipPool.Get(ptr, out var blip) ? blip : null;
+            if (ptr == IntPtr.Zero) return null;
+            blipPool.Create(ptr, out var blip);
+            return blip;
         }
 
         public IVoiceChannel CreateVoiceChannel(bool spatial, float maxDistance)
@@ -322,42 +374,54 @@ namespace AltV.Net
             CheckIfCallIsValid();
             var ptr = AltNative.Server.Server_CreateVoiceChannel(NativePointer,
                 spatial, maxDistance);
-            return voiceChannelPool.Get(ptr, out var voiceChannel) ? voiceChannel : null;
+            if (ptr == IntPtr.Zero) return null;
+            voiceChannelPool.Create(ptr, out var voiceChannel);
+            return voiceChannel;
         }
 
         public IColShape CreateColShapeCylinder(Position pos, float radius, float height)
         {
             CheckIfCallIsValid();
             var ptr = AltNative.Server.Server_CreateColShapeCylinder(NativePointer, pos, radius, height);
-            return colShapePool.Get(ptr, out var colShape) ? colShape : null;
+            if (ptr == IntPtr.Zero) return null;
+            colShapePool.Create(ptr, out var colShape);
+            return colShape;
         }
 
         public IColShape CreateColShapeSphere(Position pos, float radius)
         {
             CheckIfCallIsValid();
             var ptr = AltNative.Server.Server_CreateColShapeSphere(NativePointer, pos, radius);
-            return colShapePool.Get(ptr, out var colShape) ? colShape : null;
+            if (ptr == IntPtr.Zero) return null;
+            colShapePool.Create(ptr, out var colShape);
+            return colShape;
         }
 
         public IColShape CreateColShapeCircle(Position pos, float radius)
         {
             CheckIfCallIsValid();
             var ptr = AltNative.Server.Server_CreateColShapeCircle(NativePointer, pos, radius);
-            return colShapePool.Get(ptr, out var colShape) ? colShape : null;
+            if (ptr == IntPtr.Zero) return null;
+            colShapePool.Create(ptr, out var colShape);
+            return colShape;
         }
 
         public IColShape CreateColShapeCube(Position pos, Position pos2)
         {
             CheckIfCallIsValid();
             var ptr = AltNative.Server.Server_CreateColShapeCube(NativePointer, pos, pos2);
-            return colShapePool.Get(ptr, out var colShape) ? colShape : null;
+            if (ptr == IntPtr.Zero) return null;
+            colShapePool.Create(ptr, out var colShape);
+            return colShape;
         }
 
         public IColShape CreateColShapeRectangle(float x1, float y1, float x2, float y2, float z)
         {
             CheckIfCallIsValid();
             var ptr = AltNative.Server.Server_CreateColShapeRectangle(NativePointer, x1, y1, x2, y2, z);
-            return colShapePool.Get(ptr, out var colShape) ? colShape : null;
+            if (ptr == IntPtr.Zero) return null;
+            colShapePool.Create(ptr, out var colShape);
+            return colShape;
         }
 
         public void RemoveBlip(IBlip blip)
@@ -490,6 +554,68 @@ namespace AltV.Net
             var namePtr = AltNative.StringUtils.StringToHGlobalUtf8(name);
             AltNative.Server.Server_RestartResource(NativePointer, namePtr);
             Marshal.FreeHGlobal(namePtr);
+        }
+
+        public void GetMetaData(string key, out MValueConst value)
+        {
+            var stringPtr = AltNative.StringUtils.StringToHGlobalUtf8(key);
+            value = new MValueConst(AltNative.Server.Server_GetMetaData(NativePointer, stringPtr));
+            Marshal.FreeHGlobal(stringPtr);
+        }
+
+        public void SetMetaData(string key, object value)
+        {
+            CreateMValue(out var mValue, value);
+            var stringPtr = AltNative.StringUtils.StringToHGlobalUtf8(key);
+            AltNative.Server.Server_SetMetaData(NativePointer, stringPtr, mValue.nativePointer);
+            Marshal.FreeHGlobal(stringPtr);
+            mValue.Dispose();
+        }
+
+        public bool HasMetaData(string key)
+        {
+            var stringPtr = AltNative.StringUtils.StringToHGlobalUtf8(key);
+            var result = AltNative.Server.Server_HasMetaData(NativePointer, stringPtr);
+            Marshal.FreeHGlobal(stringPtr);
+            return result;
+        }
+
+        public void DeleteMetaData(string key)
+        {
+            var stringPtr = AltNative.StringUtils.StringToHGlobalUtf8(key);
+            AltNative.Server.Server_DeleteMetaData(NativePointer, stringPtr);
+            Marshal.FreeHGlobal(stringPtr);
+        }
+
+        public void GetSyncedMetaData(string key, out MValueConst value)
+        {
+            var stringPtr = AltNative.StringUtils.StringToHGlobalUtf8(key);
+            value = new MValueConst(AltNative.Server.Server_GetSyncedMetaData(NativePointer, stringPtr));
+            Marshal.FreeHGlobal(stringPtr);
+        }
+
+        public void SetSyncedMetaData(string key, object value)
+        {
+            CreateMValue(out var mValue, value);
+            var stringPtr = AltNative.StringUtils.StringToHGlobalUtf8(key);
+            AltNative.Server.Server_SetSyncedMetaData(NativePointer, stringPtr, mValue.nativePointer);
+            Marshal.FreeHGlobal(stringPtr);
+            mValue.Dispose();
+        }
+
+        public bool HasSyncedMetaData(string key)
+        {
+            var stringPtr = AltNative.StringUtils.StringToHGlobalUtf8(key);
+            var result = AltNative.Server.Server_HasSyncedMetaData(NativePointer, stringPtr);
+            Marshal.FreeHGlobal(stringPtr);
+            return result;
+        }
+
+        public void DeleteSyncedMetaData(string key)
+        {
+            var stringPtr = AltNative.StringUtils.StringToHGlobalUtf8(key);
+            AltNative.Server.Server_DeleteSyncedMetaData(NativePointer, stringPtr);
+            Marshal.FreeHGlobal(stringPtr);
         }
 
         public void CreateMValueNil(out MValueConst mValue)
@@ -795,7 +921,7 @@ namespace AltV.Net
                 mValues[i] = mValue;
             }
         }
-        
+
         [Conditional("DEBUG")]
         public void CheckIfCallIsValid([CallerMemberName] string callerName = "")
         {

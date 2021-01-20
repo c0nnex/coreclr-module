@@ -414,10 +414,9 @@ namespace AltV.Net.EntitySync.SpatialPartitions
         */
         protected static bool CanSeeOtherDimension(int dimension, int otherDimension)
         {
-            if (dimension > 0) return dimension == otherDimension;
-            if (dimension < 0) return otherDimension == 0 || dimension == otherDimension;
-            if (dimension == 0) return otherDimension == 0;
-            return false;
+            if (dimension > 0) return dimension == otherDimension || otherDimension == int.MinValue;
+            if (dimension < 0) return otherDimension == 0 || dimension == otherDimension || otherDimension == int.MinValue;
+            return otherDimension == 0 || otherDimension == int.MinValue;
         }
 
         public override IList<IEntity> Find(Vector3 position, int dimension)
@@ -443,10 +442,13 @@ namespace AltV.Net.EntitySync.SpatialPartitions
 
             while (gridEntity != null)
             {
-                if (Vector3.DistanceSquared(gridEntity.Entity.Position, position) <= gridEntity.Entity.RangeSquared &&
-                    CanSeeOtherDimension(gridEntity.Entity.Dimension, dimension))
+                var currDistance = Vector3.DistanceSquared(gridEntity.Entity.Position, position);
+                if (currDistance <= gridEntity.Entity.RangeSquared &&
+                    CanSeeOtherDimension(dimension, gridEntity.Entity.Dimension))
                 {
-                    entities.Add(gridEntity.Entity);
+                    var entity = gridEntity.Entity;
+                    entity.LastStreamInRange = currDistance;
+                    entities.Add(entity);
                 }
 
                 gridEntity = gridEntity.Next;

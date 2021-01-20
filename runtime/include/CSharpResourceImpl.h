@@ -9,6 +9,14 @@
 #include <altv-cpp-api/SDK.h>
 #include <altv-cpp-api/events/CMetaDataChangeEvent.h>
 #include <altv-cpp-api/events/CSyncedMetaDataChangeEvent.h>
+#include <altv-cpp-api/events/CVehicleDestroyEvent.h>
+#include <altv-cpp-api/events/CFireEvent.h>
+#include <altv-cpp-api/events/CStartProjectileEvent.h>
+#include <altv-cpp-api/events/CPlayerWeaponChangeEvent.h>
+#include <altv-cpp-api/events/CNetOwnerChangeEvent.h>
+#include <altv-cpp-api/events/CVehicleAttachEvent.h>
+#include <altv-cpp-api/events/CVehicleDetachEvent.h>
+#include <altv-cpp-api/events/CPlayerEnteringVehicleEvent.h>
 
 #ifdef _WIN32
 #define RESOURCES_PATH "\\resources\\"
@@ -36,7 +44,7 @@
 #pragma clang diagnostic pop
 #endif
 
-typedef alt::MValueConst* (* MValueFunctionCallback)(alt::MValueConst*[], long size);
+typedef alt::MValueConst* (* MValueFunctionCallback)(alt::MValueConst* [], long size);
 
 class CustomInvoker : public alt::IMValueFunction::Impl {
 public:
@@ -50,7 +58,7 @@ public:
         uint64_t size = args.GetSize();
         if (size == 0) {
             alt::MValueConst* resultConstPtr = mValueFunctionCallback(nullptr, 0);
-            alt::MValue result = *((alt::MValue*)resultConstPtr);
+            alt::MValue result = *((alt::MValue*) resultConstPtr);
             return result;
         } else {
 #ifdef _WIN32
@@ -65,7 +73,7 @@ public:
 #ifdef _WIN32
             delete[] constArgs;
 #endif
-            alt::MValue result = *((alt::MValue*)resultConstPtr);
+            alt::MValue result = *((alt::MValue*) resultConstPtr);
             return result;
         }
     }
@@ -105,6 +113,8 @@ typedef void (* PlayerChangeVehicleSeatDelegate_t)(alt::IVehicle* vehicle, alt::
 
 typedef void (* PlayerEnterVehicleDelegate_t)(alt::IVehicle* vehicle, alt::IPlayer* player, uint8_t seat);
 
+typedef void (* PlayerEnteringVehicleDelegate_t)(alt::IVehicle* vehicle, alt::IPlayer* player, uint8_t seat);
+
 typedef void (* PlayerLeaveVehicleDelegate_t)(alt::IVehicle* vehicle, alt::IPlayer* player, uint8_t seat);
 
 typedef void (* StopDelegate_t)();
@@ -141,12 +151,33 @@ typedef void (* MetaChangeDelegate_t)(void* entity, alt::IBaseObject::Type type,
 typedef void (* ColShapeDelegate_t)(void* colShape, void* entity, alt::IBaseObject::Type baseObjectType,
                                     bool state);
 
-typedef void (* WeaponDamageDelegate_t)(alt::IPlayer* source, void* target, alt::IBaseObject::Type targetBaseObjectType,
+typedef void (* WeaponDamageDelegate_t)(const alt::CEvent* event, alt::IPlayer* source, void* target,
+                                        alt::IBaseObject::Type targetBaseObjectType,
                                         uint32_t weaponHash, uint16_t damageValue, position_t shotOffset,
                                         alt::CWeaponDamageEvent::BodyPart bodyPart);
 
-typedef void (* ExplosionDelegate_t)(alt::IPlayer* source, alt::CExplosionEvent::ExplosionType explosionType,
-                                     position_t position, uint32_t explosionFX);
+typedef void (* ExplosionDelegate_t)(const alt::CEvent* event, alt::IPlayer* source,
+                                     alt::CExplosionEvent::ExplosionType explosionType,
+                                     position_t position, uint32_t explosionFX, void* targetEntity,
+                                     alt::IBaseObject::Type targetType);
+
+typedef void (* VehicleDestroyDelegate_t)(alt::IVehicle* vehicle);
+
+typedef void (* FireDelegate_t)(const alt::CEvent* event, alt::IPlayer* source, alt::CFireEvent::FireInfo fires[],
+                                int fireSize);
+
+typedef void (* StartProjectileDelegate_t)(const alt::CEvent* event, alt::IPlayer* source, position_t startPosition,
+                                           position_t direction,
+                                           uint32_t ammoHash, uint32_t weaponHash);
+
+typedef void (* PlayerWeaponChangeDelegate_t)(const alt::CEvent* event, alt::IPlayer* target, uint32_t oldWeapon,
+                                              uint32_t newWeapon);
+
+typedef void (* NetOwnerChangeDelegate_t)(const alt::CEvent* event, void* target, alt::IBaseObject::Type targetType, alt::IPlayer* oldNetOwner, alt::IPlayer* newNetOwner);
+
+typedef void (* VehicleAttachDelegate_t)(const alt::CEvent* event, alt::IVehicle* target, alt::IVehicle* attached);
+
+typedef void (* VehicleDetachDelegate_t)(const alt::CEvent* event, alt::IVehicle* target, alt::IVehicle* detached);
 
 class CSharpResourceImpl : public alt::IResource::Impl {
     bool OnEvent(const alt::CEvent* ev) override;
@@ -161,9 +192,11 @@ class CSharpResourceImpl : public alt::IResource::Impl {
 
     void OnRemoveBaseObject(alt::Ref<alt::IBaseObject> object) override;
 
-    void* GetBaseObjectPointer(alt::IBaseObject* baseObject);
+    static void* GetBaseObjectPointer(alt::IBaseObject* baseObject);
 
-    void* GetEntityPointer(alt::IEntity* entity);
+    static void* GetEntityPointer(alt::IEntity* entity);
+
+    static alt::IBaseObject::Type GetEntityType(alt::IEntity* entity);
 
     void ResetDelegates();
 
@@ -206,6 +239,8 @@ public:
 
     PlayerEnterVehicleDelegate_t OnPlayerEnterVehicleDelegate = nullptr;
 
+    PlayerEnteringVehicleDelegate_t OnPlayerEnteringVehicleDelegate = nullptr;
+
     PlayerLeaveVehicleDelegate_t OnPlayerLeaveVehicleDelegate = nullptr;
 
     StopDelegate_t OnStopDelegate = nullptr;
@@ -245,6 +280,20 @@ public:
     RemoveColShapeDelegate_t OnRemoveColShapeDelegate = nullptr;
 
     ColShapeDelegate_t OnColShapeDelegate = nullptr;
+
+    VehicleDestroyDelegate_t OnVehicleDestroyDelegate = nullptr;
+
+    FireDelegate_t OnFireDelegate = nullptr;
+
+    StartProjectileDelegate_t OnStartProjectileDelegate = nullptr;
+
+    PlayerWeaponChangeDelegate_t OnPlayerWeaponChangeDelegate = nullptr;
+
+    NetOwnerChangeDelegate_t OnNetOwnerChangeDelegate = nullptr;
+
+    VehicleAttachDelegate_t OnVehicleAttachDelegate = nullptr;
+
+    VehicleDetachDelegate_t OnVehicleDetachDelegate = nullptr;
 
     alt::Array<CustomInvoker*>* invokers;
     CoreClr* coreClr;
@@ -348,6 +397,9 @@ EXPORT void CSharpResourceImpl_SetPlayerChangeVehicleSeatDelegate(CSharpResource
 EXPORT void CSharpResourceImpl_SetPlayerEnterVehicleDelegate(CSharpResourceImpl* resource,
                                                              PlayerEnterVehicleDelegate_t delegate);
 
+EXPORT void CSharpResourceImpl_SetPlayerEnteringVehicleDelegate(CSharpResourceImpl* resource,
+                                                                PlayerEnteringVehicleDelegate_t delegate);
+
 EXPORT void CSharpResourceImpl_SetPlayerLeaveVehicleDelegate(CSharpResourceImpl* resource,
                                                              PlayerLeaveVehicleDelegate_t delegate);
 
@@ -398,3 +450,24 @@ EXPORT void CSharpResourceImpl_SetRemoveColShapeDelegate(CSharpResourceImpl* res
 
 EXPORT void CSharpResourceImpl_SetColShapeDelegate(CSharpResourceImpl* resource,
                                                    ColShapeDelegate_t delegate);
+
+EXPORT void CSharpResourceImpl_SetVehicleDestroyDelegate(CSharpResourceImpl* resource,
+                                                         VehicleDestroyDelegate_t delegate);
+
+EXPORT void CSharpResourceImpl_SetFireDelegate(CSharpResourceImpl* resource,
+                                               FireDelegate_t delegate);
+
+EXPORT void CSharpResourceImpl_SetStartProjectileDelegate(CSharpResourceImpl* resource,
+                                                          StartProjectileDelegate_t delegate);
+
+EXPORT void CSharpResourceImpl_SetPlayerWeaponChangeDelegate(CSharpResourceImpl* resource,
+                                                             PlayerWeaponChangeDelegate_t delegate);
+
+EXPORT void CSharpResourceImpl_SetNetOwnerChangeDelegate(CSharpResourceImpl* resource,
+                                                         NetOwnerChangeDelegate_t delegate);
+
+EXPORT void CSharpResourceImpl_SetVehicleAttachDelegate(CSharpResourceImpl* resource,
+                                                 VehicleAttachDelegate_t delegate);
+
+EXPORT void CSharpResourceImpl_SetVehicleDetachDelegate(CSharpResourceImpl* resource,
+                                                 VehicleDetachDelegate_t delegate);

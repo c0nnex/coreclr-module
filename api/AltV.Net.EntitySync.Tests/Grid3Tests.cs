@@ -12,7 +12,7 @@ namespace AltV.Net.EntitySync.Tests
         [SetUp]
         public void Setup()
         {
-            AltEntitySync.Init(1, 500,
+            AltEntitySync.Init(1, 500, _ => true,
                 (threadCount, repository) => new MockNetworkLayer(threadCount, repository),
                 (entity, threadCount) => (entity.Id % threadCount), 
                 (entityId, entityType, threadCount) => (entityId % threadCount),
@@ -31,6 +31,31 @@ namespace AltV.Net.EntitySync.Tests
             {
                 Assert.True(enumerator.MoveNext());
                 Assert.AreEqual(entity, enumerator.Current);
+            }
+        }
+
+        [Test]
+        public void NegativeDimensionTest()
+        {
+            var position = GetRandomVector3();
+            var entity = new Entity(1, position, 0, 1);
+            grid3.Add(entity);
+            using (var enumerator = grid3.Find(position, -1).GetEnumerator())
+            {
+                Assert.True(enumerator.MoveNext());
+                Assert.AreEqual(entity, enumerator.Current);
+            }
+        }
+        
+        [Test]
+        public void PrivateDimensionTest()
+        {
+            var position = GetRandomVector3();
+            var entity = new Entity(1, position, 0, 1);
+            grid3.Add(entity);
+            using (var enumerator = grid3.Find(position, 1).GetEnumerator())
+            {
+                Assert.False(enumerator.MoveNext());
             }
         }
 

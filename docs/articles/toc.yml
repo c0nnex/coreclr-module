@@ -1,5 +1,5 @@
 - name: Getting Started
-  href: intro.md
+  href: index.md
   items:
     - name: Setup
       href: setup.md
@@ -20,6 +20,8 @@
       href: resource-communication.md
     - name: Entity factories
       href: entity-factories.md
+    - name: Entity data
+      href: entity-data.md
     - name: Async
       href: async.md
     - name: ColShapes example
@@ -36,14 +38,28 @@
       href: vehicle_create.md
     - name: Give player a weapon
       href: player_giveweapon.md
+    - name: Voice chat
+      href: voice.md
+    - name: Resource initialization order
+      href: resource-initialization-order.md
+    - name: Loop all players, vehicles, ...
+      href: loop-all.md
+    - name: Interactions
+      href: interactions.md
 - name: Player Events
   href: player_events.md
   items:
     - name: Death
       href: player_death.md
     - name: Weapon damage
-      href: player_damage.md
+      href: weapon_damage.md
     - name: Connect
       href: player_connect.md
     - name: Disconnect
       href: player_disconnect.md
+    - name: Weapon change
+      href: player_weapon_change.md
+    - name: Enter vehicle
+      href: player_enter_vehicle.md
+    - name: Leave vehicle
+      href: player_leave_vehicle.md

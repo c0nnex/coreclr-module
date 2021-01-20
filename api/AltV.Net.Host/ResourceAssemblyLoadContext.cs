@@ -11,10 +11,21 @@ namespace AltV.Net.Host
         private readonly AssemblyDependencyResolver resolver;
         public readonly HashSet<string> SharedAssemblyNames;
 
+        private readonly Func<string, Assembly> loadAssembly;
+
         public ResourceAssemblyLoadContext(string resourceDllPath, string resourcePath, string resourceName) : base(
             resourceName,
             Environment.GetEnvironmentVariable("CSHARP_MODULE_DISABLE_COLLECTIBLE") == null)
         {
+            if (Environment.GetEnvironmentVariable("CSHARP_MODULE_DISABLE_IN_MEMORY_DLL") == null)
+            {
+                loadAssembly = LoadFromPathAsStream;
+            }
+            else
+            {
+                loadAssembly = LoadFromAssemblyPath;
+            }
+            
             resolver = new AssemblyDependencyResolver(resourceDllPath);
             SharedAssemblyNames = new HashSet<string>();
             Resolving += (context, assemblyName) =>
@@ -24,7 +35,7 @@ namespace AltV.Net.Host
                 {
                     try
                     {
-                        var assembly = LoadFromAssemblyPath(dllPath);
+                        var assembly = loadAssembly(dllPath);
                         CheckAssembly(assembly);
                         return assembly;
                     }
@@ -40,7 +51,7 @@ namespace AltV.Net.Host
                 {
                     try
                     {
-                        var assembly = LoadFromAssemblyPath(dllPath);
+                        var assembly = loadAssembly(dllPath);
                         CheckAssembly(assembly);
                         return assembly;
                     }
@@ -56,7 +67,7 @@ namespace AltV.Net.Host
                 {
                     try
                     {
-                        var assembly = LoadFromAssemblyPath(dllPath);
+                        var assembly = loadAssembly(dllPath);
                         CheckAssembly(assembly);
                         return assembly;
                     }
@@ -73,7 +84,7 @@ namespace AltV.Net.Host
                 {
                     try
                     {
-                        var assembly = LoadFromAssemblyPath(dllPath);
+                        var assembly = loadAssembly(dllPath);
                         CheckAssembly(assembly);
                         return assembly;
                     }
@@ -152,8 +163,25 @@ namespace AltV.Net.Host
             if (SharedAssemblyNames.Contains(assemblyName.Name)) return null;
             var assemblyPath = resolver.ResolveAssemblyToPath(assemblyName);
             if (assemblyPath == null) return null;
-            var assembly = LoadFromAssemblyPath(assemblyPath);
+            var assembly = loadAssembly(assemblyPath);
             CheckAssembly(assembly);
+            return assembly;
+        }
+
+        private Assembly LoadFromPathAsStream(string path)
+        {
+            using var assemblyStream = new MemoryStream(File.ReadAllBytes(path));
+            Stream assemblySymbols = null;
+
+            var symbolsPath = Path.ChangeExtension(path, ".pdb");
+            if (File.Exists(symbolsPath))
+            {
+                // Found a symbol next to the dll to load it
+                assemblySymbols = new MemoryStream(File.ReadAllBytes(symbolsPath));
+            }
+
+            var assembly = LoadFromStream(assemblyStream, assemblySymbols);
+            assemblySymbols?.Dispose();
             return assembly;
         }
 

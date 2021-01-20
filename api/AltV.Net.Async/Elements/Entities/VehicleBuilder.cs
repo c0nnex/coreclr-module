@@ -156,9 +156,9 @@ namespace AltV.Net.Async.Elements.Entities
             return this;
         }
 
-        public IVehicleBuilder RoofOpened(bool value)
+        public IVehicleBuilder RoofState(byte value)
         {
-            Add(ptr => AltNative.Vehicle.Vehicle_SetRoofOpened(ptr, value));
+            Add(ptr => AltNative.Vehicle.Vehicle_SetRoofState(ptr, value));
             return this;
         }
 
@@ -201,6 +201,18 @@ namespace AltV.Net.Async.Elements.Entities
         public IVehicleBuilder DamageData(string value)
         {
             Add(ptr => AltNative.Vehicle.Vehicle_LoadDamageDataFromBase64(ptr, value));
+            return this;
+        }
+
+        public IVehicleBuilder Appearance(string value)
+        {
+            Add(ptr => AltNative.Vehicle.Vehicle_LoadAppearanceDataFromBase64(ptr, value));
+            return this;
+        }
+
+        public IVehicleBuilder ScriptData(string value)
+        {
+            Add(ptr => AltNative.Vehicle.Vehicle_LoadScriptDataFromBase64(ptr, value));
             return this;
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using AltV.Net.Data;
 using AltV.Net.Elements.Args;
+using AltV.Net.Elements.Refs;
 using AltV.Net.Native;
 
 namespace AltV.Net.Elements.Entities
@@ -67,6 +68,20 @@ namespace AltV.Net.Elements.Entities
             }
         }
 
+        public override bool Visible
+        {
+            get
+            {
+                CheckIfEntityExists();
+                return AltNative.Player.Player_GetVisible(NativePointer);
+            }
+            set
+            {
+                CheckIfEntityExists();
+                AltNative.Player.Player_SetVisible(NativePointer, value);
+            }
+        }
+
         public override int Dimension
         {
             get
@@ -99,6 +114,12 @@ namespace AltV.Net.Elements.Entities
                 AltNative.Player.Player_GetIP(NativePointer, ref ptr);
                 return Marshal.PtrToStringUTF8(ptr);
             }
+        }
+
+        public override void SetNetworkOwner(IPlayer player, bool disableMigration)
+        {
+            CheckIfEntityExists();
+            AltNative.Player.Player_SetNetworkOwner(NativePointer, player?.NativePointer ?? IntPtr.Zero, disableMigration);
         }
 
         public override void GetMetaData(string key, out MValueConst value)
@@ -372,24 +393,6 @@ namespace AltV.Net.Elements.Entities
             }
         }
 
-        public uint Weapon
-        {
-            get
-            {
-                CheckIfEntityExists();
-                return AltNative.Player.Player_GetWeapon(NativePointer);
-            }
-        }
-
-        public ushort Ammo
-        {
-            get
-            {
-                CheckIfEntityExists();
-                return AltNative.Player.Player_GetAmmo(NativePointer);
-            }
-        }
-
         public Position AimPosition
         {
             get
@@ -521,10 +524,10 @@ namespace AltV.Net.Elements.Entities
             AltNative.Player.Player_GiveWeapon(NativePointer, weapon, ammo, selectWeapon);
         }
 
-        public void RemoveWeapon(uint weapon)
+        public bool RemoveWeapon(uint weapon)
         {
             CheckIfEntityExists();
-            AltNative.Player.Player_RemoveWeapon(NativePointer, weapon);
+            return AltNative.Player.Player_RemoveWeapon(NativePointer, weapon);
         }
 
         public void RemoveAllWeapons()
@@ -545,6 +548,12 @@ namespace AltV.Net.Elements.Entities
             AltNative.Player.Player_RemoveWeaponComponent(NativePointer, weapon, weaponComponent);
         }
 
+        public bool HasWeaponComponent(uint weapon, uint weaponComponent)
+        {
+            CheckIfEntityExists();
+            return AltNative.Player.Player_HasWeaponComponent(NativePointer, weapon, weaponComponent);
+        }
+
         public void GetCurrentWeaponComponents(out uint[] weaponComponents)
         {
             CheckIfEntityExists();
@@ -557,6 +566,12 @@ namespace AltV.Net.Elements.Entities
         {
             CheckIfEntityExists();
             AltNative.Player.Player_SetWeaponTintIndex(NativePointer, weapon, tintIndex);
+        }
+
+        public byte GetWeaponTintIndex(uint weapon)
+        {
+            CheckIfEntityExists();
+            return AltNative.Player.Player_GetWeaponTintIndex(NativePointer, weapon);
         }
 
         public byte GetCurrentWeaponTintIndex()
@@ -579,14 +594,6 @@ namespace AltV.Net.Elements.Entities
             Alt.Server.TriggerClientEvent(this, eventName, args);
         }
 
-        public ReadOnlyPlayer Copy()
-        {
-            CheckIfEntityExists();
-            var readOnlyPlayer = ReadOnlyPlayer.Empty;
-            AltNative.Player.Player_Copy(NativePointer, ref readOnlyPlayer);
-            return readOnlyPlayer;
-        }
-
         protected override void InternalAddRef()
         {
             AltNative.Player.Player_AddRef(NativePointer);
@@ -595,6 +602,17 @@ namespace AltV.Net.Elements.Entities
         protected override void InternalRemoveRef()
         {
             AltNative.Player.Player_RemoveRef(NativePointer);
+        }
+
+        public void ClearBloodDamage()
+        {
+            AltNative.Player.Player_ClearBloodDamage(NativePointer);
+        }
+
+        public bool TryCreateRef(out PlayerRef playerRef)
+        {
+            playerRef = new PlayerRef(this);
+            return playerRef.Exists;
         }
     }
 }

@@ -61,6 +61,12 @@ namespace AltV.Net.Async
             add => Module.PlayerEnterVehicleAsyncEventHandler.Add(value);
             remove => Module.PlayerEnterVehicleAsyncEventHandler.Remove(value);
         }
+        
+        public static event PlayerEnteringVehicleAsyncDelegate OnPlayerEnteringVehicle
+        {
+            add => Module.PlayerEnteringVehicleAsyncEventHandler.Add(value);
+            remove => Module.PlayerEnteringVehicleAsyncEventHandler.Remove(value);
+        }
 
         public static event PlayerLeaveVehicleAsyncDelegate OnPlayerLeaveVehicle
         {
@@ -116,6 +122,48 @@ namespace AltV.Net.Async
             remove => Module.ColShapeAsyncDelegateHandlers.Remove(value);
         }
 
+        public static event VehicleDestroyAsyncDelegate OnVehicleDestroy
+        {
+            add => Module.VehicleDestroyAsyncDelegateHandlers.Add(value);
+            remove => Module.VehicleDestroyAsyncDelegateHandlers.Remove(value);
+        }
+        
+        public static event FireAsyncDelegate OnFire
+        {
+            add => Module.FireAsyncDelegateHandlers.Add(value);
+            remove => Module.FireAsyncDelegateHandlers.Remove(value);
+        }
+
+        public static event StartProjectileAsyncDelegate OnStartProjectile
+        {
+            add => Module.StartProjectileAsyncDelegateHandlers.Add(value);
+            remove => Module.StartProjectileAsyncDelegateHandlers.Remove(value);
+        }
+
+        public static event PlayerWeaponChangeAsyncDelegate OnPlayerWeaponChange
+        {
+            add => Module.PlayerWeaponChangeAsyncDelegateHandlers.Add(value);
+            remove => Module.PlayerWeaponChangeAsyncDelegateHandlers.Remove(value);
+        }
+
+        public static event NetOwnerChangeAsyncDelegate OnNetworkOwnerChange
+        {
+            add => Module.NetOwnerChangeAsyncEventHandler.Add(value);
+            remove => Module.NetOwnerChangeAsyncEventHandler.Remove(value);
+        }
+        
+        public static event VehicleAttachAsyncDelegate OnVehicleAttach
+        {
+            add => Module.VehicleAttachAsyncEventHandler.Add(value);
+            remove => Module.VehicleAttachAsyncEventHandler.Remove(value);
+        }
+        
+        public static event VehicleDetachAsyncDelegate OnVehicleDetach
+        {
+            add => Module.VehicleDetachAsyncEventHandler.Add(value);
+            remove => Module.VehicleDetachAsyncEventHandler.Remove(value);
+        }
+        
         public static async void Log(string message)
         {
             var messagePtr = AltNative.StringUtils.StringToHGlobalUtf8(message);
@@ -193,6 +241,18 @@ namespace AltV.Net.Async
         {
             CheckIfAsyncResource();
             return AltVAsync.Schedule(action, value);
+        }
+
+        public static void RunOnMainThread(Action action)
+        {
+            CheckIfAsyncResource();
+            AltVAsync.ScheduleNoneTask(action);
+        }
+
+        public static void RunOnMainThread(Action<object> action, object value)
+        {
+            CheckIfAsyncResource();
+            AltVAsync.ScheduleNoneTask(action, value);
         }
     }
 }

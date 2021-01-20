@@ -46,6 +46,20 @@ namespace AltV.Net.Elements.Entities
                 return AltNative.Checkpoint.Checkpoint_GetColShapeType(NativePointer);
             }
         }
+        
+        public bool IsPlayersOnly
+        {
+            get
+            {
+                CheckIfEntityExists();
+                return AltNative.Checkpoint.Checkpoint_IsPlayersOnly(NativePointer);
+            }
+            set
+            {
+                CheckIfEntityExists();
+                AltNative.Checkpoint.Checkpoint_SetPlayersOnly(NativePointer, value); 
+            }
+        }
 
         public override void GetMetaData(string key, out MValueConst value)
         {
@@ -83,6 +97,11 @@ namespace AltV.Net.Elements.Entities
                 CheckIfEntityExists();
                 return AltNative.Checkpoint.Checkpoint_GetCheckpointType(NativePointer);
             }
+            set
+            {
+                CheckIfEntityExists();
+                AltNative.Checkpoint.Checkpoint_SetCheckpointType(NativePointer, value);
+            }
         }
 
         public float Height
@@ -92,6 +111,11 @@ namespace AltV.Net.Elements.Entities
                 CheckIfEntityExists();
                 return AltNative.Checkpoint.Checkpoint_GetHeight(NativePointer);
             }
+            set
+            {
+                CheckIfEntityExists();
+                AltNative.Checkpoint.Checkpoint_SetHeight(NativePointer, value);
+            }
         }
 
         public float Radius
@@ -100,6 +124,11 @@ namespace AltV.Net.Elements.Entities
             {
                 CheckIfEntityExists();
                 return AltNative.Checkpoint.Checkpoint_GetRadius(NativePointer);
+            }
+            set
+            {
+                CheckIfEntityExists();
+                AltNative.Checkpoint.Checkpoint_SetRadius(NativePointer, value);
             }
         }
 
@@ -111,6 +140,27 @@ namespace AltV.Net.Elements.Entities
                 var color = Rgba.Zero;
                 AltNative.Checkpoint.Checkpoint_GetColor(NativePointer, ref color);
                 return color;
+            }
+            set
+            {
+                CheckIfEntityExists();
+                AltNative.Checkpoint.Checkpoint_SetColor(NativePointer, value);
+            }
+        }
+
+        public Position NextPosition
+        {
+            get
+            {
+                CheckIfEntityExists();
+                var position = Position.Zero;
+                AltNative.Checkpoint.Checkpoint_GetNextPosition(NativePointer, ref position);
+                return position;
+            }
+            set
+            {
+                CheckIfEntityExists();
+                AltNative.Checkpoint.Checkpoint_SetNextPosition(NativePointer, value);
             }
         }
 

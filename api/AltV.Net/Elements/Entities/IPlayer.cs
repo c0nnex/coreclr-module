@@ -1,5 +1,6 @@
 using System;
 using AltV.Net.Data;
+using AltV.Net.Elements.Refs;
 using AltV.Net.Enums;
 
 namespace AltV.Net.Elements.Entities
@@ -89,16 +90,6 @@ namespace AltV.Net.Elements.Entities
         /// Gets the current movement speed of the player in m/s
         /// </summary>
         float MoveSpeed { get; }
-
-        /// <summary>
-        /// Returns the current weapon the player is holding
-        /// </summary>
-        uint Weapon { get; }
-
-        /// <summary>
-        /// Returns the ammo in the current weapon the player is holding
-        /// </summary>
-        ushort Ammo { get; }
 
         /// <summary>
         /// Returns the World Position of where the player is currently aiming
@@ -195,7 +186,7 @@ namespace AltV.Net.Elements.Entities
         /// Removes the weapon by hash
         /// </summary>
         /// <param name="weapon"></param>
-        void RemoveWeapon(uint weapon);
+        bool RemoveWeapon(uint weapon);
 
         /// <summary>
         /// Removes all player weapons
@@ -230,6 +221,14 @@ namespace AltV.Net.Elements.Entities
         void RemoveWeaponComponent(uint weapon, uint weaponComponent);
 
         /// <summary>
+        /// Checks if a weapon has a component
+        /// </summary>
+        /// <param name="weapon">Weapon hash</param>
+        /// <param name="weaponComponent">Weapon Component hash</param>
+        /// <returns></returns>
+        bool HasWeaponComponent(uint weapon, uint weaponComponent);
+
+        /// <summary>
         /// Gets the current weapon components for the weapon in hand
         /// </summary>
         /// <param name="weaponComponents">Array of component hashes</param>
@@ -241,6 +240,12 @@ namespace AltV.Net.Elements.Entities
         /// <param name="weapon">Weapon hash</param>
         /// <param name="tintIndex">tintIndex</param>
         void SetWeaponTintIndex(uint weapon, byte tintIndex);
+        
+        /// <summary>
+        /// Gets the weapon tint of a weapon
+        /// </summary>
+        /// <param name="weapon">Weapon hash</param>
+        byte GetWeaponTintIndex(uint weapon);
 
         /// <summary>
         /// Returns weapon tint of current weapon
@@ -248,7 +253,12 @@ namespace AltV.Net.Elements.Entities
         /// <returns></returns>
         byte GetCurrentWeaponTintIndex();
 
-        ReadOnlyPlayer Copy();
+        /// <summary>
+        /// Clears the blood damage of the player
+        /// </summary>
+        void ClearBloodDamage();
+        
+        bool TryCreateRef(out PlayerRef playerRef);
     }
 
     public static class PlayerExtensions

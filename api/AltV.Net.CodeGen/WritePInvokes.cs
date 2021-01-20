@@ -7,6 +7,7 @@ namespace AltV.Net.CodeGen
 {
     public static class WritePInvokes
     {
+        //TODO: add a dictionary for unsafe code to generate headers for that as well
         private static readonly IDictionary<string, string> CToCSharpTypes = new Dictionary<string, string>
         {
             ["alt::IPlayer*"] = "IntPtr",
@@ -32,9 +33,11 @@ namespace AltV.Net.CodeGen
             ["bool"] = "bool",
             ["const char*&"] = "ref IntPtr",
             ["int"] = "int",
+            ["int*"] = "ref int",
             ["alt::Array<uint32_t>&"] = "ref UIntArray",
             ["alt::Array<uint32_t>*"] = "ref UIntArray",
             ["float"] = "float",
+            ["float*"] = "ref float",
             ["alt::IVehicle*"] = "IntPtr",
             ["void*"] = "IntPtr",
             ["alt::IBaseObject::Type&"] = "ref BaseObjectType",
@@ -68,6 +71,7 @@ namespace AltV.Net.CodeGen
                 "ref MValue", //no c# representation for MValue function memory layout yet, this is only in commented code and not required
             ["alt::ICore*"] = "IntPtr",
             ["alt::CEvent::Type"] = "ushort",
+            ["alt::CEvent*"] = "IntPtr",
             ["alt::EventCallback"] = "AltV.Net.Server.EventCallback",
             ["alt::TickCallback"] = "AltV.Net.Server.TickCallback",
             ["alt::CommandCallback"] = "AltV.Net.Server.CommandCallback",
@@ -78,7 +82,6 @@ namespace AltV.Net.CodeGen
             ["alt::Array<alt::StringView>*"] = "ref StringViewArray",
             ["alt::Array<alt::String>*"] = "ref StringArray",
             ["alt::Array<alt::MValue>*"] = "ref MValueArray",
-            
             ["alt::MValueConst*"] = "IntPtr",
             ["alt::MValueConst*[]"] = "IntPtr[]",
             ["const char*[]"] = "IntPtr[]",
@@ -104,13 +107,35 @@ namespace AltV.Net.CodeGen
             throw new ArgumentException("No csharp type found for:" + cType + " param:" + name);
         }
 
+        private static string TransformParameterName(string parameterName)
+        {
+            var splitParamName = parameterName.Split("_");
+            if (splitParamName.Length < 2) return parameterName;
+
+            var newParamName = "";
+            for (int i = 0, length = splitParamName.Length; i < length; i++)
+            {
+                if (i > 0)
+                {
+                    newParamName += splitParamName[i].FirstCharToUpper();
+                }
+                else
+                {
+                    newParamName += splitParamName[i];
+                }
+            }
+
+            return newParamName;
+        }
+
+
         public static string Write(ParseExports.CMethod[] methods)
         {
             var fullFile = new StringBuilder();
             foreach (var method in methods)
             {
                 var template = $@"[DllImport(DllName, CallingConvention = NativeCallingConvention)]
-internal static extern {TypeToCSharp(method.ReturnType)} {method.Name}({string.Join(", ", method.Params.Select(param => TypeToCSharp(param.Type, param.Name) + " " + param.Name).ToArray())});";
+internal static extern {TypeToCSharp(method.ReturnType)} {method.Name}({string.Join(", ", method.Params.Select(param => TypeToCSharp(param.Type, param.Name) + " " + TransformParameterName(param.Name)).ToArray())});";
                 template += Environment.NewLine;
                 fullFile.Append(template);
             }

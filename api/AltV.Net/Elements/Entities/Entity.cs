@@ -14,6 +14,9 @@ namespace AltV.Net.Elements.Entities
 
         public abstract uint Model { get; set; }
 
+        public abstract bool Visible { get; set; }
+
+        public abstract void SetNetworkOwner(IPlayer player, bool disableMigration);
         public abstract void SetSyncedMetaData(string key, in MValueConst value);
         public abstract void GetSyncedMetaData(string key, out MValueConst value);
         public abstract bool HasSyncedMetaData(string key);
@@ -34,7 +37,7 @@ namespace AltV.Net.Elements.Entities
         public bool GetSyncedMetaData<T>(string key, out T result)
         {
             CheckIfEntityExists();
-            GetSyncedMetaData(key, out var mValue);
+            GetSyncedMetaData(key, out MValueConst mValue);
             var obj = mValue.ToObject();
             mValue.Dispose();
             if (!(obj is T cast))
@@ -58,7 +61,7 @@ namespace AltV.Net.Elements.Entities
         public bool GetStreamSyncedMetaData<T>(string key, out T result)
         {
             CheckIfEntityExists();
-            GetStreamSyncedMetaData(key, out var mValue);
+            GetStreamSyncedMetaData(key, out MValueConst mValue);
             var obj = mValue.ToObject();
             mValue.Dispose();
             if (!(obj is T cast))
@@ -69,6 +72,119 @@ namespace AltV.Net.Elements.Entities
 
             result = cast;
             return true;
+        }
+        
+        public bool GetSyncedMetaData(string key, out int result)
+        {
+            CheckIfEntityExists();
+            GetSyncedMetaData(key, out MValueConst mValue);
+            using (mValue)
+            {
+                if (mValue.type != MValueConst.Type.Int)
+                {
+                    result = default;
+                    return false;
+                }
+
+                result = (int) mValue.GetInt();
+            }
+
+            return true;
+        }
+        
+        public bool GetSyncedMetaData(string key, out uint result)
+        {
+            CheckIfEntityExists();
+            GetSyncedMetaData(key, out MValueConst mValue);
+            using (mValue)
+            {
+                if (mValue.type != MValueConst.Type.Uint)
+                {
+                    result = default;
+                    return false;
+                }
+
+                result = (uint) mValue.GetUint();
+            }
+
+            return true;
+        }
+        
+        public bool GetSyncedMetaData(string key, out float result)
+        {
+            CheckIfEntityExists();
+            GetSyncedMetaData(key, out MValueConst mValue);
+            using (mValue)
+            {
+                if (mValue.type != MValueConst.Type.Double)
+                {
+                    result = default;
+                    return false;
+                }
+
+                result = (float) mValue.GetDouble();
+            }
+
+            return true;
+        }
+        
+        public bool GetStreamSyncedMetaData(string key, out int result)
+        {
+            CheckIfEntityExists();
+            GetStreamSyncedMetaData(key, out MValueConst mValue);
+            using (mValue)
+            {
+                if (mValue.type != MValueConst.Type.Int)
+                {
+                    result = default;
+                    return false;
+                }
+
+                result = (int) mValue.GetInt();
+            }
+
+            return true;
+        }
+        
+        public bool GetStreamSyncedMetaData(string key, out uint result)
+        {
+            CheckIfEntityExists();
+            GetStreamSyncedMetaData(key, out MValueConst mValue);
+            using (mValue)
+            {
+                if (mValue.type != MValueConst.Type.Uint)
+                {
+                    result = default;
+                    return false;
+                }
+
+                result = (uint) mValue.GetUint();
+            }
+
+            return true;
+        }
+        
+        public bool GetStreamSyncedMetaData(string key, out float result)
+        {
+            CheckIfEntityExists();
+            GetStreamSyncedMetaData(key, out MValueConst mValue);
+            using (mValue)
+            {
+                if (mValue.type != MValueConst.Type.Double)
+                {
+                    result = default;
+                    return false;
+                }
+
+                result = (float) mValue.GetDouble();
+            }
+
+            return true;
+        }
+
+        public void ResetNetworkOwner()
+        {
+            SetNetworkOwner(null, false);
         }
 
         protected Entity(IntPtr nativePointer, BaseObjectType type, ushort id) : base(nativePointer, type)

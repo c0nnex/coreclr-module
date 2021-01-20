@@ -33,7 +33,7 @@ namespace AltV.Net.EntitySync
         
         internal readonly LinkedList<EntityRemoveDelegate> EntityRemoveCallbacks = new LinkedList<EntityRemoveDelegate>();
 
-        public EntitySyncServer(ulong threadCount, int syncRate,
+        public EntitySyncServer(ulong threadCount, int syncRate, Func<ulong, bool> netOwnerEvents,
             Func<ulong, IClientRepository, NetworkLayer> createNetworkLayer,
             Func<IEntity, ulong, ulong> entityThreadId,
             Func<ulong, ulong, ulong, ulong> entityIdAndTypeThreadId,
@@ -42,6 +42,11 @@ namespace AltV.Net.EntitySync
             if (threadCount < 1)
             {
                 throw new ArgumentException("threadCount must be >= 1");
+            }
+            
+            if (syncRate < 0)
+            {
+                throw new ArgumentException("syncRate must be >= 0");
             }
 
             entityThreads = new EntityThread[threadCount];
@@ -57,9 +62,9 @@ namespace AltV.Net.EntitySync
                 entityThreadRepositories[i] = entityThreadRepository;
                 clientThreadRepositories[i] = clientThreadRepository;
                 spatialPartitions[i] = spatialPartition;
-                entityThreads[i] = new EntityThread(i, entityThreadRepository, clientThreadRepository, spatialPartition, syncRate,
+                entityThreads[i] = new EntityThread(i, entityThreadRepository, clientThreadRepository, spatialPartition, syncRate, netOwnerEvents(i),
                     OnEntityCreate,
-                    OnEntityRemove, OnEntityDataChange, OnEntityPositionChange, OnEntityClearCache);
+                    OnEntityRemove, OnEntityDataChange, OnEntityPositionChange, OnEntityClearCache, OnEntityNetOwnerChange);
             }
 
             entityRepository = new EntityRepository(entityThreadRepositories, entityThreadId, entityIdAndTypeThreadId);
@@ -89,7 +94,7 @@ namespace AltV.Net.EntitySync
                 while (changedKey != null)
                 {
                     var key = changedKey.Value;
-                    if (entity.TryGetData(key, out var value))
+                    if (entity.TryGetThreadLocalData(key, out var value))
                     {
                         data[key] = value;
                     }
@@ -134,7 +139,7 @@ namespace AltV.Net.EntitySync
                 while (changedKey != null)
                 {
                     var key = changedKey.Value;
-                    if (entity.TryGetData(key, out var value))
+                    if (entity.TryGetThreadLocalData(key, out var value))
                     {
                         data[key] = value;
                     }
@@ -160,6 +165,11 @@ namespace AltV.Net.EntitySync
         private void OnEntityClearCache(IClient client, IEntity entity)
         {
             networkLayer.SendEvent(client, new EntityClearCacheEvent(entity));
+        }
+        
+        private void OnEntityNetOwnerChange(IClient client, IEntity entity, bool netOwner)
+        {
+            networkLayer.SendEvent(client, new EntityNetOwnerChangeEvent(entity, netOwner));
         }
 
         public IEntity CreateEntity(ulong type, Vector3 position, int dimension, uint range, IDictionary<string, object> data)
@@ -194,6 +204,16 @@ namespace AltV.Net.EntitySync
         public void UpdateEntity(IEntity entity)
         {
             entityRepository.Update(entity);
+        }
+        
+        public void UpdateEntityData(IEntity entity, string key, object value)
+        {
+            entityRepository.UpdateData(entity, key, value);
+        }
+        
+        public void ResetEntityData(IEntity entity, string key)
+        {
+            entityRepository.ResetData(entity, key);
         }
 
         public bool TryGetEntity(ulong id, ulong type, out IEntity entity)

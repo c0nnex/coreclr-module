@@ -10,9 +10,8 @@ namespace AltV.Net
     {
         public static void RegisterEvents(object target)
         {
-#pragma warning disable 612, 618
-            ModuleScriptMethodIndexer.Index(target, new[] {typeof(EventAttribute), typeof(ServerEventAttribute), typeof(ClientEventAttribute), typeof(ScriptEventAttribute)},
-#pragma warning restore 612, 618
+            ModuleScriptMethodIndexer.Index(target,
+                new[] {typeof(ServerEventAttribute), typeof(ClientEventAttribute), typeof(ScriptEventAttribute)},
                 (baseEvent, eventMethod, eventMethodDelegate) =>
                 {
                     switch (baseEvent)
@@ -121,6 +120,19 @@ namespace AltV.Net
                                             new[] {typeof(IVehicle), typeof(IPlayer), typeof(byte)});
                                     if (scriptFunction == null) return;
                                     OnPlayerEnterVehicle += (vehicle, player, seat) =>
+                                    {
+                                        scriptFunction.Set(vehicle);
+                                        scriptFunction.Set(player);
+                                        scriptFunction.Set(seat);
+                                        scriptFunction.Call();
+                                    };
+                                    break;
+                                case ScriptEventType.PlayerEnteringVehicle:
+                                    scriptFunction =
+                                        ScriptFunction.Create(eventMethodDelegate,
+                                            new[] {typeof(IVehicle), typeof(IPlayer), typeof(byte)});
+                                    if (scriptFunction == null) return;
+                                    OnPlayerEnteringVehicle += (vehicle, player, seat) =>
                                     {
                                         scriptFunction.Set(vehicle);
                                         scriptFunction.Set(player);
@@ -253,20 +265,161 @@ namespace AltV.Net
                                             scriptFunction.Set(damage);
                                             scriptFunction.Set(shotOffset);
                                             scriptFunction.Set(damageOffset);
+                                            if (scriptFunction.Call() is bool value)
+                                            {
+                                                return value;
+                                            }
+
+                                            return true;
+                                        };
+                                    break;
+                                case ScriptEventType.VehicleDestroy:
+                                    scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                        new[]
+                                        {
+                                            typeof(IVehicle)
+                                        });
+                                    if (scriptFunction == null) return;
+                                    OnVehicleDestroy +=
+                                        vehicle =>
+                                        {
+                                            scriptFunction.Set(vehicle);
                                             scriptFunction.Call();
                                         };
+                                    break;
+                                case ScriptEventType.Explosion:
+                                    scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                        new[]
+                                        {
+                                            typeof(IPlayer), typeof(ExplosionType), typeof(Position), typeof(uint),
+                                            typeof(IEntity)
+                                        });
+                                    if (scriptFunction == null) return;
+                                    OnExplosion += (player, explosionType, position, explosionFx, targetEntity) =>
+                                    {
+                                        scriptFunction.Set(player);
+                                        scriptFunction.Set(explosionType);
+                                        scriptFunction.Set(position);
+                                        scriptFunction.Set(explosionFx);
+                                        scriptFunction.Set(targetEntity);
+                                        if (scriptFunction.Call() is bool value)
+                                        {
+                                            return value;
+                                        }
+
+                                        return true;
+                                    };
+                                    break;
+                                case ScriptEventType.Fire:
+                                    scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                        new[]
+                                        {
+                                            typeof(IPlayer), typeof(FireInfo[])
+                                        });
+                                    if (scriptFunction == null) return;
+                                    OnFire += (player, fireInfos) =>
+                                    {
+                                        scriptFunction.Set(player);
+                                        scriptFunction.Set(fireInfos);
+                                        if (scriptFunction.Call() is bool value)
+                                        {
+                                            return value;
+                                        }
+
+                                        return true;
+                                    };
+                                    break;
+                                case ScriptEventType.StartProjectile:
+                                    scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                        new[]
+                                        {
+                                            typeof(IPlayer), typeof(Position), typeof(Position), typeof(uint),
+                                            typeof(uint)
+                                        });
+                                    if (scriptFunction == null) return;
+                                    OnStartProjectile += (player, startPosition, direction, ammoHash, weaponHash) =>
+                                    {
+                                        scriptFunction.Set(player);
+                                        scriptFunction.Set(startPosition);
+                                        scriptFunction.Set(direction);
+                                        scriptFunction.Set(ammoHash);
+                                        scriptFunction.Set(weaponHash);
+                                        if (scriptFunction.Call() is bool value)
+                                        {
+                                            return value;
+                                        }
+
+                                        return true;
+                                    };
+                                    break;
+                                case ScriptEventType.PlayerWeaponChange:
+                                    scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                        new[]
+                                        {
+                                            typeof(IPlayer), typeof(uint), typeof(uint)
+                                        });
+                                    if (scriptFunction == null) return;
+                                    OnPlayerWeaponChange += (player, oldWeapon, newWeapon) =>
+                                    {
+                                        scriptFunction.Set(player);
+                                        scriptFunction.Set(oldWeapon);
+                                        scriptFunction.Set(newWeapon);
+                                        if (scriptFunction.Call() is bool value)
+                                        {
+                                            return value;
+                                        }
+
+                                        return true;
+                                    };
+                                    break;
+                                case ScriptEventType.NetOwnerChange:
+                                    scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                        new[]
+                                        {
+                                            typeof(IEntity), typeof(IPlayer), typeof(IPlayer)
+                                        });
+                                    if (scriptFunction == null) return;
+                                    OnNetworkOwnerChange += (targetEntity, oldNetOwner, newNetOwner) =>
+                                    {
+                                        scriptFunction.Set(targetEntity);
+                                        scriptFunction.Set(oldNetOwner);
+                                        scriptFunction.Set(newNetOwner);
+                                        scriptFunction.Call();
+                                    };
+                                    break;
+                                case ScriptEventType.VehicleAttach:
+                                    scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                        new[]
+                                        {
+                                            typeof(IVehicle), typeof(IVehicle)
+                                        });
+                                    if (scriptFunction == null) return;
+                                    OnVehicleAttach += (targetVehicle, attachedVehicle) =>
+                                    {
+                                        scriptFunction.Set(targetVehicle);
+                                        scriptFunction.Set(attachedVehicle);
+                                        scriptFunction.Call();
+                                    };
+                                    break;
+                                case ScriptEventType.VehicleDetach:
+                                    scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                        new[]
+                                        {
+                                            typeof(IVehicle), typeof(IVehicle)
+                                        });
+                                    if (scriptFunction == null) return;
+                                    OnVehicleDetach += (targetVehicle, detachedVehicle) =>
+                                    {
+                                        scriptFunction.Set(targetVehicle);
+                                        scriptFunction.Set(detachedVehicle);
+                                        scriptFunction.Call();
+                                    };
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException();
                             }
 
                             break;
-#pragma warning disable 612, 618
-                        case EventAttribute @event:
-                            var eventName = @event.Name ?? eventMethod.Name;
-                            Module.On(eventName, Function.Create(eventMethodDelegate));
-                            break;
-#pragma warning restore 612, 618
                         case ServerEventAttribute @event:
                             var serverEventName = @event.Name ?? eventMethod.Name;
                             Module.OnServer(serverEventName, Function.Create(eventMethodDelegate));
