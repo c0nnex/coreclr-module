@@ -136,6 +136,14 @@ void Player_RemoveRef(alt::IPlayer* player) {
     player->RemoveRef();
 }
 
+bool Player_GetVisible(alt::IPlayer* player) {
+    return player->GetVisible();
+}
+
+void Player_SetVisible(alt::IPlayer* player, bool state) {
+    player->SetVisible(state);
+}
+
 // Player
 
 bool Player_IsConnected(alt::IPlayer* player) {
@@ -202,8 +210,8 @@ void Player_GiveWeapon(alt::IPlayer* player, uint32_t weapon, int32_t ammo, bool
     player->GiveWeapon(weapon, ammo, selectWeapon);
 }
 
-void Player_RemoveWeapon(alt::IPlayer* player, uint32_t weapon) {
-    player->RemoveWeapon(weapon);
+bool Player_RemoveWeapon(alt::IPlayer* player, uint32_t weapon) {
+    return player->RemoveWeapon(weapon);
 }
 
 void Player_RemoveAllWeapons(alt::IPlayer* player) {
@@ -218,6 +226,10 @@ void Player_RemoveWeaponComponent(alt::IPlayer* player, uint32_t weapon, uint32_
     player->RemoveWeaponComponent(weapon, component);
 }
 
+bool Player_HasWeaponComponent(alt::IPlayer* player, uint32_t weapon, uint32_t component) {
+    return player->HasWeaponComponent(weapon, component);
+}
+
 void Player_GetCurrentWeaponComponents(alt::IPlayer* player, alt::Array<uint32_t> &weaponComponents) {
     auto currWeaponComponents = player->GetCurrentWeaponComponents();
     alt::Array<uint32_t> values;
@@ -229,6 +241,10 @@ void Player_GetCurrentWeaponComponents(alt::IPlayer* player, alt::Array<uint32_t
 
 void Player_SetWeaponTintIndex(alt::IPlayer* player, uint32_t weapon, uint8_t tintIndex) {
     player->SetWeaponTintIndex(weapon, tintIndex);
+}
+
+uint8_t Player_GetWeaponTintIndex(alt::IPlayer* player, uint32_t weapon) {
+    return player->GetWeaponTintIndex(weapon);
 }
 
 uint8_t Player_GetCurrentWeaponTintIndex(alt::IPlayer* player) {
@@ -285,14 +301,6 @@ void Player_SetMaxArmor(alt::IPlayer* player, uint16_t armor) {
 
 float Player_GetMoveSpeed(alt::IPlayer* player) {
     return player->GetMoveSpeed();
-}
-
-uint32_t Player_GetWeapon(alt::IPlayer* player) {
-    return player->GetWeapon();
-}
-
-uint16_t Player_GetAmmo(alt::IPlayer* player) {
-    return player->GetAmmo();
 }
 
 void Player_GetAimPos(alt::IPlayer* player, position_t &aimPosition) {
@@ -400,4 +408,24 @@ void Player_Copy(alt::IPlayer* player, player_struct_t* player_struct) {
 
 void Player_Copy_Dispose(player_struct_t* player_struct) {
     delete[] player_struct->name;
+}
+
+void Player_GetPositionCoords2(alt::IPlayer* player, float* position_x, float* position_y, float* position_z,float *rotation_x,float *rotation_y,float *rotation_z,int* dimension) {
+    auto playerPosition = player->GetPosition();
+    *position_x = playerPosition.x;
+    *position_y = playerPosition.y;
+    *position_z = playerPosition.z;
+    auto playerRotation = player->GetRotation();
+    *rotation_x = playerRotation.pitch;
+    *rotation_y = playerRotation.roll;
+    *rotation_z = playerRotation.yaw;
+    *dimension = player->GetDimension();
+}
+
+void Player_SetNetworkOwner(alt::IPlayer* player, alt::IPlayer* networkOwnerPlayer, bool disableMigration) {
+    player->SetNetworkOwner(networkOwnerPlayer, disableMigration);
+}
+
+void Player_ClearBloodDamage(alt::IPlayer* player) {
+    player->ClearBloodDamage();
 }

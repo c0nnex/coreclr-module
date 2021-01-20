@@ -10,6 +10,8 @@ namespace AltV.Net.EntitySync
 
         ulong Type { get; }
 
+        bool Exists { get; }
+
         (ulong, ulong) HashKey { get; }
 
         // set position update flag to true in entity when updating position
@@ -26,10 +28,20 @@ namespace AltV.Net.EntitySync
         
         uint RangeSquared { get; }
         
+        IClient TempNetOwner { get; set; }
+
+        IClient NetOwner { get; set; }
+        
+        float NetOwnerRange { get; set; }
+        
+        float TempNetOwnerRange { get; set; }
+        
+        uint MigrationDistance { get; }
+        
+        float LastStreamInRange { get; set; }
+        
         EntityDataSnapshot DataSnapshot { get; }
-        
-        IDictionary<string, object> Data { get; }
-        
+
         IDictionary<string, object> ThreadLocalData { get; }
 
         void SetData(string key, object value);
@@ -52,6 +64,8 @@ namespace AltV.Net.EntitySync
             out int currNewDimension);
 
         void SetThreadLocalData(string key, object value);
+        
+        void SetExistsInternal(bool state);
 
         void ResetThreadLocalData(string key);
 

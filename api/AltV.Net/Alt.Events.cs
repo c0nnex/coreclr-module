@@ -62,6 +62,17 @@ namespace AltV.Net
             remove => Module.ExplosionEventHandler.Remove(value);
         }
 
+        /// <summary>
+        /// Weapon damage event handler
+        /// <example>
+        /// <code>
+        /// Alt.OnWeaponDamage += (player, target, weapon, damage, shotOffset, bodyPart) => {
+        ///   Console.WriteLine($"{player.Name} got damaged.");
+        ///   return true; // return false will cancel the weapon damage event and player won't receive damage.
+        /// };
+        /// </code>
+        /// </example>
+        /// </summary>
         public static event WeaponDamageDelegate OnWeaponDamage
         {
             add => Module.WeaponDamageEventHandler.Add(value);
@@ -96,6 +107,12 @@ namespace AltV.Net
         {
             add => Module.PlayerEnterVehicleEventHandler.Add(value);
             remove => Module.PlayerEnterVehicleEventHandler.Remove(value);
+        }
+        
+        public static event PlayerEnteringVehicleDelegate OnPlayerEnteringVehicle
+        {
+            add => Module.PlayerEnteringVehicleEventHandler.Add(value);
+            remove => Module.PlayerEnteringVehicleEventHandler.Remove(value);
         }
 
         public static event PlayerLeaveVehicleDelegate OnPlayerLeaveVehicle
@@ -158,6 +175,48 @@ namespace AltV.Net
         {
             add => Module.ColShapeEventHandler.Add(value);
             remove => Module.ColShapeEventHandler.Remove(value);
+        }
+
+        public static event VehicleDestroyDelegate OnVehicleDestroy
+        {
+            add => Module.VehicleDestroyEventHandler.Add(value);
+            remove => Module.VehicleDestroyEventHandler.Remove(value);
+        }
+
+        public static event FireDelegate OnFire
+        {
+            add => Module.FireEventHandler.Add(value);
+            remove => Module.FireEventHandler.Remove(value);
+        }
+
+        public static event StartProjectileDelegate OnStartProjectile
+        {
+            add => Module.StartProjectileEventHandler.Add(value);
+            remove => Module.StartProjectileEventHandler.Remove(value);
+        }
+
+        public static event PlayerWeaponChangeDelegate OnPlayerWeaponChange
+        {
+            add => Module.PlayerWeaponChangeEventHandler.Add(value);
+            remove => Module.PlayerWeaponChangeEventHandler.Remove(value);
+        }
+        
+        public static event NetOwnerChangeDelegate OnNetworkOwnerChange
+        {
+            add => Module.NetOwnerChangeEventHandler.Add(value);
+            remove => Module.NetOwnerChangeEventHandler.Remove(value);
+        }
+        
+        public static event VehicleAttachDelegate OnVehicleAttach
+        {
+            add => Module.VehicleAttachEventHandler.Add(value);
+            remove => Module.VehicleAttachEventHandler.Remove(value);
+        }
+        
+        public static event VehicleDetachDelegate OnVehicleDetach
+        {
+            add => Module.VehicleDetachEventHandler.Add(value);
+            remove => Module.VehicleDetachEventHandler.Remove(value);
         }
     }
 }

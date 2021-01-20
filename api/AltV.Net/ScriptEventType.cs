@@ -11,6 +11,7 @@ namespace AltV.Net
         VehicleRemove,
         PlayerChangeVehicleSeat,
         PlayerEnterVehicle,
+        PlayerEnteringVehicle,
         PlayerLeaveVehicle,
         PlayerEvent,
         PlayerCustomEvent,
@@ -20,6 +21,14 @@ namespace AltV.Net
         MetaDataChange,
         SyncedMetaDataChange,
         ColShape,
-        WeaponDamage
+        WeaponDamage,
+        VehicleDestroy,
+        Explosion,
+        Fire,
+        StartProjectile,
+        PlayerWeaponChange,
+        NetOwnerChange,
+        VehicleAttach,
+        VehicleDetach
     }
 }

@@ -33,6 +33,10 @@ namespace AltV.Net.Mock
 
         public string RootDirectory => "";
 
+        public string Branch => "";
+
+        public string Version => "";
+
         public INativeResource Resource => new NativeResource(IntPtr.Zero, IntPtr.Zero);
 
         internal MockServer(IntPtr nativePointer, IBaseBaseObjectPool baseBaseObjectPool,
@@ -507,5 +511,47 @@ namespace AltV.Net.Mock
         {
             throw new NotImplementedException();
         }
+
+        public void SetMetaData(string key, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasMetaData(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteMetaData(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetMetaData(string key, out MValueConst value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetSyncedMetaData(string key, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasSyncedMetaData(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteSyncedMetaData(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetSyncedMetaData(string key, out MValueConst value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsDebug { get; }
     }
 }

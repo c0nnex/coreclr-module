@@ -165,10 +165,10 @@ namespace AltV.Net
             _module.OnPlayerDeath(playerPointer, killerEntityPointer, killerBaseObjectType, weapon);
         }
 
-        public static void OnExplosion(IntPtr playerPointer, ExplosionType explosionType,
-            Position position, uint explosionFx)
+        public static void OnExplosion(IntPtr eventPointer, IntPtr playerPointer, ExplosionType explosionType,
+            Position position, uint explosionFx, IntPtr targetEntityPointer, BaseObjectType targetEntityType)
         {
-            _module.OnExplosion(playerPointer, explosionType, position, explosionFx);
+            _module.OnExplosion(eventPointer, playerPointer, explosionType, position, explosionFx, targetEntityPointer, targetEntityType);
         }
 
         public static void OnWeaponDamage(IntPtr eventPointer, IntPtr playerPointer, IntPtr entityPointer,
@@ -186,6 +186,11 @@ namespace AltV.Net
         public static void OnPlayerEnterVehicle(IntPtr vehiclePointer, IntPtr playerPointer, byte seat)
         {
             _module.OnPlayerEnterVehicle(vehiclePointer, playerPointer, seat);
+        }
+
+        public static void OnPlayerEnteringVehicle(IntPtr vehiclePointer, IntPtr playerPointer, byte seat)
+        {
+            _module.OnPlayerEnteringVehicle(vehiclePointer, playerPointer, seat);
         }
 
         public static void OnPlayerLeaveVehicle(IntPtr vehiclePointer, IntPtr playerPointer, byte seat)
@@ -294,11 +299,7 @@ namespace AltV.Net
             [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)]
             string[] args, int argsSize)
         {
-            if (args == null)
-            {
-                args = new string[0];
-            }
-
+            args ??= new string[0];
             _module.OnConsoleCommand(name, args);
         }
 
@@ -318,6 +319,44 @@ namespace AltV.Net
             bool state)
         {
             _module.OnColShape(colShapePointer, targetEntityPointer, entityType, state);
+        }
+        
+        public static void OnVehicleDestroy(IntPtr vehiclePointer)
+        {
+            _module.OnVehicleDestroy(vehiclePointer);
+        }
+        
+        public static void OnFire(IntPtr eventPointer, IntPtr playerPointer,
+            [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)]
+            FireInfo[] fires, int length)
+        {
+            fires ??= new FireInfo[0];
+            _module.OnFire(eventPointer, playerPointer, fires);
+        }
+        
+        public static void OnStartProjectile(IntPtr eventPointer, IntPtr sourcePlayerPointer, Position startPosition, Position direction, uint ammoHash, uint weaponHash)
+        {
+            _module.OnStartProjectile(eventPointer, sourcePlayerPointer, startPosition, direction, ammoHash, weaponHash);
+        }
+        
+        public static void OnPlayerWeaponChange(IntPtr eventPointer, IntPtr targetPlayerPointer, uint oldWeapon, uint newWeapon)
+        {
+            _module.OnPlayerWeaponChange(eventPointer, targetPlayerPointer, oldWeapon, newWeapon);
+        }
+
+        public static void OnNetOwnerChange(IntPtr eventPointer, IntPtr targetEntityPointer, BaseObjectType targetEntityType, IntPtr oldNetOwnerPointer, IntPtr newNetOwnerPointer)
+        {
+            _module.OnNetOwnerChange(eventPointer, targetEntityPointer, targetEntityType, oldNetOwnerPointer, newNetOwnerPointer);
+        }
+
+        public static void OnVehicleAttach(IntPtr eventPointer, IntPtr targetPointer, IntPtr attachedPointer)
+        {
+            _module.OnVehicleAttach(eventPointer, targetPointer, attachedPointer);
+        }
+
+        public static void OnVehicleDetach(IntPtr eventPointer, IntPtr targetPointer, IntPtr detachedPointer)
+        {
+            _module.OnVehicleDetach(eventPointer, targetPointer, detachedPointer);
         }
     }
 }

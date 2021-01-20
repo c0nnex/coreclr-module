@@ -98,6 +98,10 @@ namespace AltV.Net
             AltNative.Resource.PlayerEnterVehicleDelegate onPlayerEnterVehicle = ModuleWrapper.OnPlayerEnterVehicle;
             handles.AddFirst(GCHandle.Alloc(onPlayerEnterVehicle));
             AltNative.Resource.CSharpResourceImpl_SetPlayerEnterVehicleDelegate(NativePointer, onPlayerEnterVehicle);
+            
+            AltNative.Resource.PlayerEnteringVehicleDelegate onPlayerEnteringVehicle = ModuleWrapper.OnPlayerEnteringVehicle;
+            handles.AddFirst(GCHandle.Alloc(onPlayerEnteringVehicle));
+            AltNative.Resource.CSharpResourceImpl_SetPlayerEnteringVehicleDelegate(NativePointer, onPlayerEnteringVehicle);
 
             AltNative.Resource.PlayerLeaveVehicleDelegate onPlayerLeaveVehicle = ModuleWrapper.OnPlayerLeaveVehicle;
             handles.AddFirst(GCHandle.Alloc(onPlayerLeaveVehicle));
@@ -166,6 +170,34 @@ namespace AltV.Net
             AltNative.Resource.ColShapeDelegate onColShape = ModuleWrapper.OnColShape;
             handles.AddFirst(GCHandle.Alloc(onColShape));
             AltNative.Resource.CSharpResourceImpl_SetColShapeDelegate(NativePointer, onColShape);
+            
+            AltNative.Resource.VehicleDestroyDelegate onVehicleDestroy = ModuleWrapper.OnVehicleDestroy;
+            handles.AddFirst(GCHandle.Alloc(onVehicleDestroy));
+            AltNative.Resource.CSharpResourceImpl_SetVehicleDestroyDelegate(NativePointer, onVehicleDestroy);
+            
+            AltNative.Resource.FireDelegate onFire = ModuleWrapper.OnFire;
+            handles.AddFirst(GCHandle.Alloc(onFire));
+            AltNative.Resource.CSharpResourceImpl_SetFireDelegate(NativePointer, onFire);
+            
+            AltNative.Resource.StartProjectileDelegate onStartProjectile = ModuleWrapper.OnStartProjectile;
+            handles.AddFirst(GCHandle.Alloc(onStartProjectile));
+            AltNative.Resource.CSharpResourceImpl_SetStartProjectileDelegate(NativePointer, onStartProjectile);
+            
+            AltNative.Resource.PlayerWeaponChangeDelegate onPlayerWeaponChange = ModuleWrapper.OnPlayerWeaponChange;
+            handles.AddFirst(GCHandle.Alloc(onPlayerWeaponChange));
+            AltNative.Resource.CSharpResourceImpl_SetPlayerWeaponChangeDelegate(NativePointer, onPlayerWeaponChange);
+            
+            AltNative.Resource.NetOwnerChangeDelegate onNetOwnerChange = ModuleWrapper.OnNetOwnerChange;
+            handles.AddFirst(GCHandle.Alloc(onNetOwnerChange));
+            AltNative.Resource.CSharpResourceImpl_SetNetOwnerChangeDelegate(NativePointer, onNetOwnerChange);
+            
+            AltNative.Resource.VehicleAttachDelegate onVehicleAttach = ModuleWrapper.OnVehicleAttach;
+            handles.AddFirst(GCHandle.Alloc(onVehicleAttach));
+            AltNative.Resource.CSharpResourceImpl_SetVehicleAttachDelegate(NativePointer, onVehicleAttach);
+            
+            AltNative.Resource.VehicleDetachDelegate onVehicleDetach = ModuleWrapper.OnVehicleDetach;
+            handles.AddFirst(GCHandle.Alloc(onVehicleDetach));
+            AltNative.Resource.CSharpResourceImpl_SetVehicleDetachDelegate(NativePointer, onVehicleDetach);
         }
 
         public IntPtr CreateInvoker(MValueFunctionCallback function)

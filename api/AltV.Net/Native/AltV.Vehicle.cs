@@ -2,7 +2,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using AltV.Net.Data;
-using AltV.Net.Elements.Args;
 
 namespace AltV.Net.Native
 {
@@ -31,6 +30,12 @@ namespace AltV.Net.Native
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
             internal static extern void Vehicle_SetRotation(IntPtr vehicle, Rotation rot);
+
+            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
+            internal static extern bool Vehicle_GetVisible(IntPtr vehicle);
+
+            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
+            internal static extern void Vehicle_SetVisible(IntPtr vehicle, bool state);
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
             internal static extern int Vehicle_GetDimension(IntPtr vehicle);
@@ -82,6 +87,9 @@ namespace AltV.Net.Native
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
             internal static extern IntPtr Vehicle_GetDriver(IntPtr vehicle);
+
+            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
+            internal static extern bool Vehicle_IsDestroyed(IntPtr vehicle);
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
             internal static extern byte Vehicle_GetMod(IntPtr vehicle, byte category);
@@ -308,10 +316,10 @@ namespace AltV.Net.Native
             internal static extern bool Vehicle_IsNightlightOn(IntPtr vehicle);
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
-            internal static extern bool Vehicle_IsRoofOpened(IntPtr vehicle);
+            internal static extern byte Vehicle_GetRoofState(IntPtr vehicle);
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
-            internal static extern void Vehicle_SetRoofOpened(IntPtr vehicle, bool state);
+            internal static extern void Vehicle_SetRoofState(IntPtr vehicle, byte state);
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
             internal static extern bool Vehicle_IsFlamethrowerActive(IntPtr vehicle);
@@ -463,6 +471,24 @@ namespace AltV.Net.Native
 
             [DllImport(DllName, CallingConvention = NativeCallingConvention)]
             internal static extern void Vehicle_LoadScriptDataFromBase64(IntPtr vehicle, string base64);
+
+            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
+            internal static extern void Vehicle_GetPositionCoords2(IntPtr vehicle, ref float positionX,
+                ref float positionY, ref float positionZ, ref float rotationX, ref float rotationY, ref float rotationZ,
+                ref int dimension);
+
+            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
+            internal static extern void Vehicle_SetNetworkOwner(IntPtr vehicle, IntPtr networkOwnerPlayer,
+                bool disableMigration);
+
+            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
+            internal static extern IntPtr Vehicle_GetAttached(IntPtr vehicle);
+
+            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
+            internal static extern IntPtr Vehicle_GetAttachedTo(IntPtr vehicle);
+            
+            [DllImport(DllName, CallingConvention = NativeCallingConvention)]
+            internal static extern void Vehicle_Repair(IntPtr vehicle);
         }
     }
 }

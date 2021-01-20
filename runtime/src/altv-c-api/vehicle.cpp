@@ -124,10 +124,22 @@ void Vehicle_RemoveRef(alt::IVehicle* vehicle) {
     vehicle->RemoveRef();
 }
 
+bool Vehicle_GetVisible(alt::IVehicle* vehicle) {
+    return vehicle->GetVisible();
+}
+
+void Vehicle_SetVisible(alt::IVehicle* vehicle, bool state) {
+    vehicle->SetVisible(state);
+}
+
 // Vehicle
 
 alt::IPlayer* Vehicle_GetDriver(alt::IVehicle* vehicle) {
     return vehicle->GetDriver().Get();
+}
+
+bool Vehicle_IsDestroyed(alt::IVehicle* vehicle) {
+    return vehicle->IsDestroyed();
 }
 
 uint8_t Vehicle_GetMod(alt::IVehicle* vehicle, uint8_t category) {
@@ -462,12 +474,12 @@ bool Vehicle_IsNightlightOn(alt::IVehicle* vehicle) {
     return vehicle->IsNightlightOn();
 }
 
-bool Vehicle_IsRoofOpened(alt::IVehicle* vehicle) {
-    return vehicle->IsRoofOpened();
+uint8_t Vehicle_GetRoofState(alt::IVehicle* vehicle) {
+    return vehicle->GetRoofState();
 }
 
-void Vehicle_SetRoofOpened(alt::IVehicle* vehicle, bool state) {
-    vehicle->SetRoofOpened(state);
+void Vehicle_SetRoofState(alt::IVehicle* vehicle, uint8_t state) {
+    vehicle->SetRoofState(state);
 }
 
 bool Vehicle_IsFlamethrowerActive(alt::IVehicle* vehicle) {
@@ -668,4 +680,32 @@ void Vehicle_GetScriptDataBase64(alt::IVehicle* vehicle, const char*&base64) {
 
 void Vehicle_LoadScriptDataFromBase64(alt::IVehicle* vehicle, const char* base64) {
     vehicle->LoadScriptDataFromBase64(base64);
+}
+
+void Vehicle_GetPositionCoords2(alt::IVehicle* vehicle, float* position_x, float* position_y, float* position_z, float* rotation_x, float* rotation_y, float* rotation_z, int* dimension) {
+    auto vehiclePosition = vehicle->GetPosition();
+    *position_x = vehiclePosition.x;
+    *position_y = vehiclePosition.y;
+    *position_z = vehiclePosition.z;
+    auto vehicleRotation = vehicle->GetRotation();
+    *rotation_x = vehicleRotation.pitch;
+    *rotation_y = vehicleRotation.roll;
+    *rotation_z = vehicleRotation.yaw;
+    *dimension = vehicle->GetDimension();
+}
+
+void Vehicle_SetNetworkOwner(alt::IVehicle* vehicle, alt::IPlayer* networkOwnerPlayer, bool disableMigration) {
+    vehicle->SetNetworkOwner(networkOwnerPlayer, disableMigration);
+}
+
+alt::IVehicle* Vehicle_GetAttached(alt::IVehicle* vehicle) {
+    return vehicle->GetAttached().Get();
+}
+
+alt::IVehicle* Vehicle_GetAttachedTo(alt::IVehicle* vehicle) {
+    return vehicle->GetAttachedTo().Get();
+}
+
+void Vehicle_Repair(alt::IVehicle* vehicle) {
+    vehicle->SetFixed();
 }

@@ -28,6 +28,8 @@ namespace AltV.Net.Async.Events
 
     public delegate Task PlayerEnterVehicleAsyncDelegate(IVehicle vehicle, IPlayer player, byte seat);
 
+    public delegate Task PlayerEnteringVehicleAsyncDelegate(IVehicle vehicle, IPlayer player, byte seat);
+
     public delegate Task PlayerLeaveVehicleAsyncDelegate(IVehicle vehicle, IPlayer player, byte seat);
 
     public delegate Task PlayerClientEventAsyncDelegate(IPlayer player, string eventName, object[] args);
@@ -39,8 +41,22 @@ namespace AltV.Net.Async.Events
     public delegate Task ColShapeAsyncDelegate(IColShape colShape, IEntity targetEntity, bool state);
     
     public delegate Task ExplosionAsyncDelegate(IPlayer player, ExplosionType explosionType, Position position,
-        uint explosionFx);
+        uint explosionFx, IEntity target);
 
     public delegate Task WeaponDamageAsyncDelegate(IPlayer player, IEntity target, uint weapon, ushort damage,
         Position shotOffset, BodyPart bodyPart);
+    
+    public delegate Task VehicleDestroyAsyncDelegate(IVehicle vehicle);
+    
+    public delegate Task FireAsyncDelegate(IPlayer player, FireInfo[] fireInfos);
+    
+    public delegate Task StartProjectileAsyncDelegate(IPlayer player, Position startPosition, Position direction, uint ammoHash, uint weaponHash);
+    
+    public delegate Task PlayerWeaponChangeAsyncDelegate(IPlayer player, uint oldWeapon, uint newWeapon);
+    
+    public delegate Task NetOwnerChangeAsyncDelegate(IEntity target, IPlayer oldNetOwner, IPlayer newNetOwner);
+    
+    public delegate Task VehicleAttachAsyncDelegate(IVehicle target, IVehicle attachedVehicle);
+    
+    public delegate Task VehicleDetachAsyncDelegate(IVehicle target, IVehicle detachedVehicle);
 }
